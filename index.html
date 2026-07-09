@@ -94,6 +94,8 @@ body{
 .cta-primary:hover::after{transform:translateX(120%)}
 .cta-primary:active{transform:translateY(0) scale(.99)}
 .cta-primary svg{flex:none}
+.cta-note{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;font-size:13px;font-weight:600;color:var(--ink-soft);letter-spacing:.01em}
+.cta-note i{width:7px;height:7px;border-radius:50%;background:#22C55E;box-shadow:0 0 0 3px rgba(34,197,94,.2);flex:none}
 
 /* ---------- section heading ---------- */
 .sec{margin-top:44px}
@@ -110,12 +112,14 @@ body{
   transition:transform var(--dur) var(--ease-spring),box-shadow var(--dur) var(--ease-spring);
 }
 .store:hover{transform:translateY(-2px);box-shadow:0 2px 4px rgba(28,22,34,.02),0 24px 48px -28px rgba(138,18,198,.35)}
-.store-media{position:relative;height:132px;border-radius:19px;overflow:hidden;background:var(--grad-soft)}
+.store-media{position:relative;height:272px;border-radius:19px;overflow:hidden;background:var(--grad-soft)}
 .store-media video,.store-media img{width:100%;height:100%;object-fit:cover;display:block}
 .store-media .noimg{position:absolute;inset:0;display:grid;place-items:center;background:var(--grad-soft)}
-.store-media .noimg span{font-family:"Fraunces";font-weight:900;font-size:26px;color:rgba(28,22,34,.22)}
+.store-media .noimg span{font-family:"Fraunces";font-weight:900;font-size:34px;color:rgba(28,22,34,.22)}
 .store-media .badge{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);padding:7px 12px;border-radius:999px;font-weight:800;font-size:12.5px;letter-spacing:.02em;display:flex;align-items:center;gap:6px}
 .store-media .badge i{width:7px;height:7px;border-radius:50%;background:#22C55E;box-shadow:0 0 0 3px rgba(34,197,94,.2)}
+.store-media .badge.closed{color:var(--ink-soft)}
+.store-media .badge.closed i{background:#9A93A3;box-shadow:0 0 0 3px rgba(154,147,163,.2)}
 .store-body{padding:16px 14px 8px}
 .store-name{font-family:"Fraunces";font-weight:700;font-size:19px;letter-spacing:-.01em}
 .store-meta{margin-top:8px;display:flex;flex-direction:column;gap:6px}
@@ -187,10 +191,56 @@ body{
 .io{opacity:0;transform:translateY(24px)}
 .io.in{opacity:1;transform:none;transition:opacity .7s var(--ease-spring),transform .7s var(--ease-spring)}
 
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.io{opacity:1;transform:none}.tile img{opacity:1}}
+/* ---------- premium animation layer ---------- */
+/* дрейф фоновых пятен — «живая» атмосфера */
+.blob.a{animation:float 7s ease-in-out infinite,drift1 26s ease-in-out infinite}
+.blob.b{animation:drift2 32s ease-in-out infinite}
+.blob.c{animation:drift3 29s ease-in-out infinite}
+@keyframes drift1{50%{transform:translate(4vw,3vh) scale(1.08)}}
+@keyframes drift2{50%{transform:translate(-5vw,4vh) scale(1.1)}}
+@keyframes drift3{50%{transform:translate(3vw,-4vh) scale(1.06)}}
+/* перетекающий градиент CTA */
+.cta-primary{background:linear-gradient(115deg,var(--g1),var(--g2),var(--g3),var(--g2),var(--g1));background-size:300% 100%;animation:ctaflow 9s linear infinite}
+@keyframes ctaflow{to{background-position:-300% 0}}
+/* вращающийся ореол медальона */
+.medallion::before{content:"";position:absolute;inset:-9px;border-radius:50%;z-index:-1;
+  background:conic-gradient(from 0deg,var(--g1),var(--g2),var(--g3),var(--g1));
+  filter:blur(11px);opacity:.55;animation:plspin 9s linear infinite}
+/* каскад появления плиток каталога */
+.tile{opacity:0;transform:translateY(20px) scale(.98)}
+.tile.seen{opacity:1;transform:none;transition:opacity .6s var(--ease-spring),transform .6s var(--ease-spring)}
+
+/* ---------- preloader ---------- */
+#preloader{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;
+  transition:opacity .6s var(--ease-soft),transform .9s var(--ease-spring)}
+#preloader.done{opacity:0;transform:translateY(-102%);pointer-events:none}
+.pl-wrap{display:flex;flex-direction:column;align-items:center;gap:22px}
+.pl-mark{position:relative;width:104px;height:104px;display:grid;place-items:center;animation:plpop .8s var(--ease-spring) both}
+.pl-ring{position:absolute;inset:-12px;border-radius:50%;
+  background:conic-gradient(from 0deg,var(--g1),var(--g2),var(--g3),var(--g2) 75%,transparent);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
+  animation:plspin .95s linear infinite}
+.pl-mark img{width:70px;height:70px;animation:plbob 1.6s ease-in-out infinite}
+.pl-word{width:150px;height:auto;opacity:.9;-webkit-mask:linear-gradient(90deg,#000 40%,rgba(0,0,0,.25) 50%,#000 60%);mask:linear-gradient(90deg,#000 40%,rgba(0,0,0,.25) 50%,#000 60%);-webkit-mask-size:250% 100%;mask-size:250% 100%;animation:plshine 2s linear infinite}
+@keyframes plspin{to{transform:rotate(360deg)}}
+@keyframes plbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes plpop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+@keyframes plshine{to{-webkit-mask-position:-250% 0;mask-position:-250% 0}}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.io{opacity:1;transform:none}.tile{opacity:1;transform:none}.tile img{opacity:1}#preloader{display:none}}
 </style>
 </head>
 <body>
+<div id="preloader" aria-hidden="true">
+  <div class="pl-wrap">
+    <div class="pl-mark">
+      <div class="pl-ring"></div>
+      <img src="assets/mark.png" alt="">
+    </div>
+    <img class="pl-word" src="assets/wordmark.png" alt="FRANTIK.BY">
+  </div>
+</div>
 <div class="bg" aria-hidden="true"><div class="blob a"></div><div class="blob b"></div><div class="blob c"></div></div>
 <div class="grain" aria-hidden="true"></div>
 
@@ -207,7 +257,7 @@ body{
       <img class="wordmark" src="assets/wordmark.png" alt="FRANTIK.BY — детская и подростковая одежда"
         onerror="this.outerHTML='frantik<span class=&quot;dot&quot;>.</span>by'">
     </h1>
-    <p class="tag" data-reveal="3">Минск · <b>3 магазина</b> · школьная коллекция 2026/2027</p>
+    <p class="tag" data-reveal="3"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:3px;color:var(--g2)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><b>Минск</b></p>
     <div class="pills" data-reveal="3">
       <span class="pill">Школьная форма</span>
       <span class="pill">Повседневное</span>
@@ -218,6 +268,7 @@ body{
       Школьная коллекция 2026/2027
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
     </a>
+    <p class="cta-note" data-reveal="4"><i></i>Уже доступна во всех наших магазинах</p>
   </header>
 
   <!-- STORES -->
@@ -258,11 +309,11 @@ body{
 <script>
 /* ---------- data ---------- */
 const STORES=[
-  {id:"tivali",name:'ТЦ «Тивали»',addr:"ул. Притыцкого 29, этаж 3, место 316",hours:"10:00 – 20:00 · без выходных",open:true,
+  {id:"tivali",name:'ТЦ «Тивали»',addr:"ул. Притыцкого 29, этаж 3, место 316",hours:"10:00 – 20:00 · без выходных",openH:10,closeH:20,closedDay:null,
    map:"https://www.google.com/maps/place/Tivali+Mall/@53.907399,27.4846515,17z",tel:"+375291076930",telView:"+375 29 107-69-30"},
-  {id:"titan",name:'ТЦ «Титан»',addr:"пр. Дзержинского 104, этаж 3, место 112",hours:"10:00 – 21:00 · без выходных",open:true,
+  {id:"titan",name:'ТЦ «Титан»',addr:"пр. Дзержинского 104, этаж 3, место 112",hours:"10:00 – 21:00 · без выходных",openH:10,closeH:21,closedDay:null,
    map:"https://www.google.com/maps/place/Titan/@53.8607128,27.4789313,17z",tel:"+375296747826",telView:"+375 29 674-78-26"},
-  {id:"expobel",name:'Рынок «Экспобел»',addr:"2 этаж, выход В6, ряд С, т.м 11",hours:"10:00 – 19:00 · пн — выходной",open:true,
+  {id:"expobel",name:'Рынок «Экспобел»',addr:"2 этаж, выход В6, ряд С, т.м 11",hours:"10:00 – 19:00 · пн — выходной",openH:10,closeH:19,closedDay:1,
    map:"https://www.google.com/maps/place/Expobel+Mall/@53.9641148,27.6241136,17z",tel:"+375296747826",telView:"+375 29 674-78-26",person:"Алёна"},
 ];
 const IC={
@@ -271,15 +322,28 @@ const IC={
   route:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20l-5-2V6l5 2m0 12l6-2m-6 2V8m6 10l5 2V8l-5-2m0 12V6m0 0L9 8"/></svg>',
   phone:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3.1-8.7A2 2 0 014 2h3a2 2 0 012 1.7c.1 1 .4 1.9.7 2.8a2 2 0 01-.5 2.1L8 9.9a16 16 0 006 6l1.3-1.2a2 2 0 012.1-.5c.9.3 1.8.6 2.8.7a2 2 0 011.7 2z"/></svg>',
 };
+/* ---------- статус магазина по времени Минска (Europe/Minsk = UTC+3) ---------- */
+function storeStatus(s){
+  const minsk=new Date(new Date().toLocaleString("en-US",{timeZone:"Europe/Minsk"}));
+  const day=minsk.getDay(), h=minsk.getHours()+minsk.getMinutes()/60;
+  const closedToday=s.closedDay===day;
+  if(!closedToday && h>=s.openH && h<s.closeH)
+    return {open:true, label:`Открыто · до ${s.closeH}:00`};
+  if(!closedToday && h<s.openH)
+    return {open:false, label:`Откроется в ${s.openH}:00`};
+  return {open:false, label:`Закрыто · открытие ${s.openH}:00`};
+}
 /* ---------- render stores ---------- */
 const storesEl=document.getElementById("stores");
-storesEl.innerHTML=STORES.map((s,i)=>`
+storesEl.innerHTML=STORES.map((s,i)=>{
+  const st=storeStatus(s);
+  return `
   <article class="store io" style="transition-delay:${i*70}ms">
     <div class="store-media">
       <video src="assets/stores/${s.id}.mp4" muted loop playsinline autoplay preload="none"
         onerror="this.style.display='none';this.parentElement.querySelector('.noimg').style.display='grid'"></video>
       <div class="noimg" style="display:none"><span>${s.name.replace(/[«»"]/g,'').trim().split(' ').pop()}</span></div>
-      <div class="badge"><i></i>Открыто сейчас</div>
+      <div class="badge${st.open?'':' closed'}"><i></i>${st.label}</div>
     </div>
     <div class="store-body">
       <div class="store-name">${s.name}</div>
@@ -293,13 +357,17 @@ storesEl.innerHTML=STORES.map((s,i)=>`
       <a class="act map" href="${s.map}" target="_blank" rel="noopener">${IC.route} Как добраться</a>
       <a class="act call" href="tel:${s.tel}">${IC.phone} ${s.telView}</a>
     </div>
-  </article>`).join("");
+  </article>`;
+}).join("");
 
 /* ---------- catalog ---------- */
 let CAT={girls:[],boys:[],updated:""};
 const grid=document.getElementById("grid"), moreBtn=document.getElementById("more"), moreR=document.getElementById("more-r");
 const BATCH=24;
 let current="girls", lbList=[], lbIdx=0, shown=0;
+const tileObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("seen");tileObs.unobserve(e.target)}}),{threshold:.06,rootMargin:"0px 0px -5% 0px"});
+function countUp(el,to){if(!to){el.textContent="";return}let t0=null;const d=900;
+  requestAnimationFrame(function step(ts){t0=t0||ts;const p=Math.min(1,(ts-t0)/d);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(step)})}
 
 function tileHTML(it,i){
   return `<button class="tile" data-i="${i}" aria-label="Открыть фото ${i+1}">
@@ -309,9 +377,14 @@ function tileHTML(it,i){
     </button>`;
 }
 function renderMore(){
-  const items=lbList, next=items.slice(shown, shown+BATCH);
-  grid.insertAdjacentHTML("beforeend", next.map((it,k)=>tileHTML(it,shown+k)).join(""));
+  const items=lbList, start=shown, next=items.slice(shown, shown+BATCH);
+  grid.insertAdjacentHTML("beforeend", next.map((it,k)=>tileHTML(it,start+k)).join(""));
   shown+=next.length;
+  Array.from(grid.children).slice(start).forEach((t,k)=>{
+    if(!t.classList.contains("tile"))return;
+    t.style.transitionDelay=((k%6)*45)+"ms";
+    tileObs.observe(t);
+  });
   const left=items.length-shown;
   moreBtn.hidden=left<=0;
   moreR.textContent=left>0?`ещё ${left}`:"";
@@ -336,8 +409,8 @@ document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>setC
 
 fetch("catalog.json").then(r=>r.ok?r.json():Promise.reject()).then(d=>{
   CAT={girls:d.girls||[],boys:d.boys||[],updated:d.updated||""};
-  document.getElementById("n-girls").textContent=CAT.girls.length||"";
-  document.getElementById("n-boys").textContent=CAT.boys.length||"";
+  countUp(document.getElementById("n-girls"),CAT.girls.length);
+  countUp(document.getElementById("n-boys"),CAT.boys.length);
   if(CAT.updated) document.getElementById("upd").textContent="Обновлено: "+CAT.updated;
   setCat(CAT.girls.length||!CAT.boys.length?"girls":"boys");
 }).catch(()=>setCat("girls"));
@@ -365,6 +438,15 @@ lb.addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});
 document.querySelectorAll(".io").forEach(el=>io.observe(el));
 document.getElementById("yr").textContent=new Date().getFullYear();
+
+/* ---------- preloader ---------- */
+(function(){
+  const pl=document.getElementById("preloader"); if(!pl) return;
+  const t0=performance.now(), MIN=700;
+  function hide(){ setTimeout(()=>pl.classList.add("done"), Math.max(0,MIN-(performance.now()-t0))); }
+  if(document.readyState==="complete") hide(); else window.addEventListener("load",hide);
+  setTimeout(()=>pl.classList.add("done"),4000); // страховка
+})();
 </script>
 </body>
 </html>
