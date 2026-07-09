@@ -201,10 +201,11 @@ body{
 .cta-primary{background:linear-gradient(115deg,var(--g1),var(--g2),var(--g3),var(--g2),var(--g1));background-size:300% 100%;
   animation:reveal .8s var(--ease-spring) .28s both, ctaflow 9s linear infinite}
 @keyframes ctaflow{to{background-position:-300% 0}}
-/* вращающийся ореол медальона */
-.medallion::before{content:"";position:absolute;inset:-9px;border-radius:50%;z-index:-1;
-  background:conic-gradient(from 0deg,var(--g1),var(--g2),var(--g3),var(--g1));
-  filter:blur(11px);opacity:.55;animation:plspin 9s linear infinite}
+/* мягкий ореол ТОЛЬКО вокруг логотипа (прозрачная середина — не наезжает на знак) */
+.medallion::before{content:"";position:absolute;inset:-24%;border-radius:50%;z-index:-1;
+  background:radial-gradient(circle at 50% 50%,transparent 45%,rgba(232,92,84,.26) 54%,rgba(193,54,127,.22) 62%,rgba(138,18,198,.15) 71%,transparent 84%);
+  filter:blur(7px);animation:halo 5.5s ease-in-out infinite}
+@keyframes halo{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
 /* каскад появления плиток каталога */
 .tile{opacity:0;transform:translateY(20px) scale(.98)}
 .tile.seen{opacity:1;transform:none;transition:opacity .6s var(--ease-spring),transform .6s var(--ease-spring)}
@@ -226,6 +227,65 @@ body{
 @keyframes plbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes plpop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
 @keyframes plshine{to{-webkit-mask-position:-250% 0;mask-position:-250% 0}}
+
+/* ---------- nearest-store finder ---------- */
+.finder-cta{display:flex;align-items:center;gap:13px;width:100%;margin-bottom:16px;padding:15px 18px;cursor:pointer;text-align:left;
+  border-radius:20px;border:1px solid var(--line);background:var(--card);
+  box-shadow:0 2px 4px rgba(28,22,34,.02),0 16px 40px -30px rgba(28,22,34,.4);
+  transition:transform var(--dur) var(--ease-spring),box-shadow var(--dur) var(--ease-spring),border-color var(--dur)}
+.finder-cta:hover{transform:translateY(-2px);border-color:transparent;box-shadow:0 22px 44px -26px rgba(193,54,127,.42)}
+.finder-cta:active{transform:translateY(0) scale(.99)}
+.finder-cta .ic{width:44px;height:44px;flex:none;border-radius:13px;display:grid;place-items:center;background:var(--grad);color:#fff;
+  background-size:200% 100%;animation:ctaflow 9s linear infinite}
+.finder-cta .tx{flex:1;min-width:0}
+.finder-cta .tx b{display:block;font-family:"Fraunces";font-weight:700;font-size:16px;letter-spacing:-.01em}
+.finder-cta .tx span{font-size:12.5px;color:var(--ink-faint);font-weight:600}
+.finder-cta .arw{flex:none;color:var(--ink-faint)}
+
+.finder{position:fixed;inset:0;z-index:80;background:rgba(20,15,26,.55);backdrop-filter:blur(8px);display:none;place-items:center;padding:20px;overflow:hidden}
+.finder.on{display:grid;animation:fade var(--dur) var(--ease-soft)}
+.finder>canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
+.finder-card{position:relative;z-index:2;width:100%;max-width:410px;max-height:90vh;overflow-y:auto;background:var(--bg);border-radius:26px;padding:30px 24px 26px;text-align:center;
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.5);animation:pop .5s var(--ease-spring)}
+@keyframes pop{from{opacity:0;transform:scale(.92) translateY(10px)}to{opacity:1;transform:none}}
+.finder-close{position:absolute;top:14px;right:14px;width:34px;height:34px;border:none;border-radius:50%;cursor:pointer;background:var(--bg-warm);color:var(--ink-soft);display:grid;place-items:center;z-index:4}
+.finder-mark{width:78px;height:78px;margin:0 auto 12px;animation:plbob 2.2s ease-in-out infinite}
+.finder-card h3{font-family:"Fraunces";font-weight:700;font-size:23px;letter-spacing:-.01em}
+.finder-card .lead{margin-top:9px;font-size:14px;color:var(--ink-soft);line-height:1.5}
+.finder-geo{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:20px;padding:15px;cursor:pointer;border:none;border-radius:16px;
+  background:linear-gradient(115deg,var(--g1),var(--g2),var(--g3),var(--g2),var(--g1));background-size:300% 100%;animation:ctaflow 9s linear infinite;
+  color:#fff;font-family:"Manrope";font-weight:800;font-size:15px;box-shadow:0 14px 34px -14px rgba(193,54,127,.6);transition:transform var(--dur-fast) var(--ease-spring)}
+.finder-geo:active{transform:scale(.98)}
+.finder-or{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(--ink-faint);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.finder-or::before,.finder-or::after{content:"";flex:1;height:1px;background:var(--line-strong)}
+.finder-inp{display:flex;gap:8px}
+.finder-inp input{flex:1;min-width:0;padding:14px 16px;border-radius:14px;border:1px solid var(--line-strong);background:var(--card);font-family:"Manrope";font-size:15px;color:var(--ink);outline:none;transition:border-color var(--dur-fast)}
+.finder-inp input:focus{border-color:var(--g2)}
+.finder-inp button{flex:none;width:52px;border:none;border-radius:14px;cursor:pointer;background:var(--ink);color:#fff;display:grid;place-items:center}
+.finder-err{margin-top:12px;font-size:13px;color:#D64550;min-height:14px;font-weight:600}
+.finder-dist{color:var(--g2);font-weight:800;font-size:14px;margin-top:6px}
+.res-card{margin-top:16px;text-align:left;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--card)}
+.res-card .rc-media{height:150px;position:relative;background:var(--grad-soft)}
+.res-card .rc-media video{width:100%;height:100%;object-fit:cover;display:block}
+.res-card .rc-body{padding:14px 16px}
+.res-card .rc-name{font-family:"Fraunces";font-weight:700;font-size:18px}
+.res-card .rc-meta{margin-top:6px;font-size:13px;color:var(--ink-soft);line-height:1.45}
+.res-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.finder-again{margin-top:16px;background:none;border:none;cursor:pointer;color:var(--ink-faint);font-family:"Manrope";font-weight:700;font-size:13px;text-decoration:underline}
+/* календарь-конструктор */
+.cal{margin-top:18px;padding-top:18px;border-top:1px solid var(--line);text-align:left}
+.cal-h{font-family:"Fraunces";font-weight:700;font-size:16px;text-align:center;margin-bottom:4px}
+.cal-sub{text-align:center;font-size:12.5px;color:var(--ink-faint);margin-bottom:14px}
+.cal-date{width:100%;padding:13px 14px;border-radius:13px;border:1px solid var(--line-strong);background:var(--card);font-family:"Manrope";font-size:15px;color:var(--ink);outline:none}
+.cal-date:focus{border-color:var(--g2)}
+.cal-lbl{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);margin:14px 0 8px}
+.cal-chips{display:flex;gap:8px}
+.cal-chip{flex:1;padding:11px 6px;border-radius:12px;border:1px solid var(--line-strong);background:var(--card);cursor:pointer;font-family:"Manrope";font-weight:700;font-size:12.5px;color:var(--ink-soft);transition:background var(--dur-fast),color var(--dur-fast),border-color var(--dur-fast)}
+.cal-chip[aria-pressed="true"]{border-color:transparent;background:var(--grad-soft);color:var(--ink)}
+.cal-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:16px;padding:14px;border:none;border-radius:15px;cursor:pointer;background:var(--ink);color:#fff;font-family:"Manrope";font-weight:800;font-size:14.5px;transition:transform var(--dur-fast) var(--ease-spring)}
+.cal-btn:hover{background:#000}
+.cal-btn:active{transform:scale(.98)}
+.cal-done{text-align:center;color:#16A34A;font-weight:700;font-size:12.5px;margin-top:10px;min-height:14px;line-height:1.4}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.io{opacity:1;transform:none}.tile{opacity:1;transform:none}.tile img{opacity:1}#preloader{display:none}}
 </style>
@@ -273,6 +333,11 @@ body{
   <!-- STORES -->
   <section class="sec">
     <div class="sec-h io"><h2>Наши магазины</h2><div class="ln"></div><span class="cnt">Минск</span></div>
+    <button class="finder-cta io" id="openFinder">
+      <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+      <span class="tx"><b>Какой магазин ближе ко мне?</b><span>Подберём ближайший за секунду</span></span>
+      <svg class="arw" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
     <div id="stores"></div>
   </section>
 
@@ -295,6 +360,30 @@ body{
     <div style="margin-top:8px">© <span id="yr"></span> · <a href="https://instagram.com/frantik.by" target="_blank" rel="noopener">Instagram</a></div>
   </footer>
 </main>
+
+<!-- NEAREST-STORE FINDER -->
+<div class="finder" id="finder" role="dialog" aria-modal="true">
+  <canvas id="confetti"></canvas>
+  <div class="finder-card">
+    <button class="finder-close" aria-label="Закрыть"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <div id="finderAsk">
+      <img class="finder-mark" src="assets/mark.png" alt="">
+      <h3>Мы тебя очень ждём!</h3>
+      <p class="lead">Знаем — новая школьная форма 2026/2027 ждёт именно тебя. Подскажем, какой из наших магазинов ближе всего к дому. Заходи, будем рады!</p>
+      <button class="finder-geo" id="finderGeo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8"/></svg>
+        Определить моё местоположение
+      </button>
+      <div class="finder-or">или введи адрес</div>
+      <div class="finder-inp">
+        <input id="finderAddr" type="text" placeholder="район, улица или город" autocomplete="off">
+        <button id="finderSearch" aria-label="Найти"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
+      </div>
+      <div class="finder-err" id="finderErr"></div>
+    </div>
+    <div id="finderResult" class="finder-res" hidden></div>
+  </div>
+</div>
 
 <!-- LIGHTBOX -->
 <div class="lb" id="lb" role="dialog" aria-modal="true">
@@ -437,6 +526,124 @@ lb.addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});
 document.querySelectorAll(".io").forEach(el=>io.observe(el));
 document.getElementById("yr").textContent=new Date().getFullYear();
+
+/* ---------- nearest-store finder ---------- */
+const COORDS={tivali:[53.907399,27.4846515],titan:[53.8607128,27.4789313],expobel:[53.9641148,27.6241136]};
+const finder=document.getElementById("finder"),fAsk=document.getElementById("finderAsk"),fRes=document.getElementById("finderResult"),fErr=document.getElementById("finderErr");
+function openFinder(){finder.classList.add("on");document.body.style.overflow="hidden";fAsk.hidden=false;fRes.hidden=true;fErr.textContent=""}
+function closeFinder(){finder.classList.remove("on");document.body.style.overflow=""}
+document.getElementById("openFinder").addEventListener("click",openFinder);
+finder.querySelector(".finder-close").addEventListener("click",closeFinder);
+finder.addEventListener("click",e=>{if(e.target===finder)closeFinder()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&finder.classList.contains("on"))closeFinder()});
+
+function haversine(a,b,c,d){const R=6371,r=Math.PI/180,dLa=(c-a)*r,dLo=(d-b)*r;const x=Math.sin(dLa/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin(dLo/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
+function nearest(lat,lon){let best=null;STORES.forEach(s=>{const c=COORDS[s.id];if(!c)return;const d=haversine(lat,lon,c[0],c[1]);if(!best||d<best.d)best={s,d};});return best}
+function showResult(lat,lon){
+  const r=nearest(lat,lon);if(!r){fErr.textContent="Не удалось определить магазин";return}
+  const s=r.s,dist=r.d<1?Math.round(r.d*1000)+" м":r.d.toFixed(1).replace(".",",")+" км";
+  fRes.innerHTML=`
+    <img class="finder-mark" src="assets/mark.png" alt="">
+    <h3>Ура! Ждём тебя здесь</h3>
+    <div class="finder-dist">Ближайший магазин · ~${dist} от тебя</div>
+    <div class="res-card">
+      <div class="rc-media"><video src="assets/stores/${s.id}.mp4" muted loop playsinline autoplay
+        onerror="this.parentElement.style.background='var(--grad-soft)'"></video></div>
+      <div class="rc-body">
+        <div class="rc-name">${s.name}</div>
+        <div class="rc-meta">${s.addr}<br>${s.hours}</div>
+        <div class="res-actions">
+          <a class="act map" href="${s.map}" target="_blank" rel="noopener">${IC.route} Адрес на карте</a>
+          <a class="act call" href="tel:${s.tel}">${IC.phone} Позвонить</a>
+        </div>
+      </div>
+    </div>
+    <div class="cal">
+      <div class="cal-h">Напомнить о нас?</div>
+      <div class="cal-sub">Добавим в твой календарь — Apple или Android</div>
+      <input type="date" id="calDate" class="cal-date">
+      <div class="cal-lbl">Напомнить</div>
+      <div class="cal-chips">
+        <button class="cal-chip" data-r="2" aria-pressed="true">За 2 дня</button>
+        <button class="cal-chip" data-r="1" aria-pressed="true">За 1 день</button>
+        <button class="cal-chip" data-r="0" aria-pressed="true">В день покупки</button>
+      </div>
+      <button class="cal-btn" id="calAdd">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18M12 14v4M10 16h4"/></svg>
+        Добавить в календарь
+      </button>
+      <div class="cal-done" id="calDone"></div>
+    </div>
+    <button class="finder-again" id="finderAgain">искать заново</button>`;
+  fAsk.hidden=true;fRes.hidden=false;
+  document.getElementById("finderAgain").onclick=()=>{fRes.hidden=true;fAsk.hidden=false;fErr.textContent=""};
+  // календарь
+  const dEl=document.getElementById("calDate");
+  const dflt=new Date(Date.now()+7*864e5);
+  dEl.value=dflt.toISOString().slice(0,10); dEl.min=new Date().toISOString().slice(0,10);
+  fRes.querySelectorAll(".cal-chip").forEach(c=>c.addEventListener("click",()=>c.setAttribute("aria-pressed",c.getAttribute("aria-pressed")!=="true")));
+  document.getElementById("calAdd").onclick=()=>addToCalendar(s);
+  confetti();
+}
+function pad(n){return String(n).padStart(2,"0")}
+function addToCalendar(s){
+  const dEl=document.getElementById("calDate"),done=document.getElementById("calDone");
+  if(!dEl.value){done.style.color="#D64550";done.textContent="Выбери дату";return}
+  const rem=[...fRes.querySelectorAll('.cal-chip[aria-pressed="true"]')].map(c=>+c.dataset.r);
+  const [Y,M,D]=dEl.value.split("-").map(Number);
+  const dt=`${Y}${pad(M)}${pad(D)}`;
+  const now=new Date(),stamp=`${now.getUTCFullYear()}${pad(now.getUTCMonth()+1)}${pad(now.getUTCDate())}T${pad(now.getUTCHours())}${pad(now.getUTCMinutes())}${pad(now.getUTCSeconds())}Z`;
+  const trig={2:"-P2D",1:"-P1D",0:"-PT0M"};
+  let al="";
+  rem.forEach(r=>{al+=`BEGIN:VALARM\r\nACTION:DISPLAY\r\nDESCRIPTION:frantik.by — ждём тебя за школьной формой!\r\nTRIGGER:${trig[r]}\r\nEND:VALARM\r\n`});
+  const ics=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//frantik.by//RU","CALSCALE:GREGORIAN","METHOD:PUBLISH",
+    "BEGIN:VEVENT",`UID:frantik-${dt}-${Math.floor(now.getTime())}@frantik.by`,`DTSTAMP:${stamp}`,
+    `DTSTART:${dt}T120000`,`DTEND:${dt}T140000`,
+    "SUMMARY:Школьная форма 2026/2027 — frantik.by",
+    `LOCATION:${(s.name+", "+s.addr+", Минск").replace(/,/g,"\\,")}`,
+    `DESCRIPTION:Ждём тебя в ${s.name}! Тел: ${s.telView}`,
+    al.trim(),"END:VEVENT","END:VCALENDAR"].filter(Boolean).join("\r\n");
+  const blob=new Blob([ics],{type:"text/calendar;charset=utf-8"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download="frantik-school.ics";document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+  done.style.color="#16A34A";
+  done.textContent=rem.length?`Готово! Напомним ${rem.map(r=>r===0?"в день покупки":r+" дн. до").join(", ")}`:"Событие добавлено в календарь";
+}
+document.getElementById("finderGeo").addEventListener("click",function(){
+  fErr.textContent="";
+  if(!navigator.geolocation){fErr.textContent="Геолокация недоступна — введите адрес ниже";return}
+  const b=this,old=b.innerHTML;b.innerHTML="Определяем…";b.disabled=true;
+  navigator.geolocation.getCurrentPosition(
+    p=>{b.innerHTML=old;b.disabled=false;showResult(p.coords.latitude,p.coords.longitude)},
+    ()=>{b.innerHTML=old;b.disabled=false;fErr.textContent="Не получилось. Введите адрес вручную ниже"},
+    {timeout:9000,enableHighAccuracy:true});
+});
+async function geocode(){
+  const q=document.getElementById("finderAddr").value.trim();if(!q)return;
+  fErr.style.color="var(--ink-soft)";fErr.textContent="Ищем адрес…";
+  try{
+    const url="https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=by&q="+encodeURIComponent(q+", Минск");
+    const d=await (await fetch(url,{headers:{Accept:"application/json"}})).json();
+    fErr.style.color="";
+    if(!d.length){fErr.textContent="Не нашли такой адрес — попробуйте иначе";return}
+    fErr.textContent="";showResult(parseFloat(d[0].lat),parseFloat(d[0].lon));
+  }catch(e){fErr.style.color="";fErr.textContent="Ошибка поиска — попробуйте геолокацию"}
+}
+document.getElementById("finderSearch").addEventListener("click",geocode);
+document.getElementById("finderAddr").addEventListener("keydown",e=>{if(e.key==="Enter")geocode()});
+function confetti(){
+  const cv=document.getElementById("confetti"),ctx=cv.getContext("2d");
+  const W=cv.width=finder.clientWidth,H=cv.height=finder.clientHeight;
+  const cols=["#E85C54","#C1367F","#8A12C6","#FF8A3D","#22C55E"];
+  const P=Array.from({length:140},(_,i)=>({x:W/2+(Math.random()-.5)*140,y:H*0.30,vx:(Math.random()-.5)*9,vy:Math.random()*-9-3,r:4+Math.random()*5,c:cols[i%cols.length],a:1,rot:Math.random()*6,vr:(Math.random()-.5)*.3}));
+  let t=0;
+  (function frame(){ctx.clearRect(0,0,W,H);t++;
+    P.forEach(p=>{p.vy+=.22;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;if(t>55)p.a-=.019;
+      ctx.save();ctx.globalAlpha=Math.max(0,p.a);ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.fillStyle=p.c;ctx.fillRect(-p.r,-p.r/2,p.r*2,p.r);ctx.restore();});
+    if(t<170)requestAnimationFrame(frame);else ctx.clearRect(0,0,W,H);
+  })();
+}
 
 /* ---------- preloader ---------- */
 (function(){
