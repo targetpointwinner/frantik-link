@@ -307,6 +307,44 @@ body{
 .cal-btn:active{transform:scale(.98)}
 .cal-done{text-align:center;color:#16A34A;font-weight:700;font-size:12.5px;margin-top:10px;min-height:14px;line-height:1.4}
 
+/* ---------- countdown ---------- */
+.countdown{display:inline-flex;align-items:center;gap:8px;margin:16px auto 0;padding:9px 16px;border-radius:999px;background:var(--grad-soft);border:1px solid var(--line);font-size:13px;font-weight:700;color:var(--ink-soft)}
+.countdown b{color:var(--ink)}
+.countdown .cd-ico{display:grid;place-items:center;color:var(--g2)}
+.countdown[hidden]{display:none}
+
+/* ---------- reviews ---------- */
+.reviews{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -20px;padding:2px 20px 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.reviews::-webkit-scrollbar{display:none}
+.rev{scroll-snap-align:start;flex:0 0 82%;max-width:320px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;
+  box-shadow:0 2px 4px rgba(28,22,34,.02),0 16px 40px -32px rgba(28,22,34,.4)}
+.rev-top{display:flex;align-items:center;gap:11px;margin-bottom:11px}
+.rev-av{width:42px;height:42px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--grad);color:#fff;font-weight:800;font-size:17px}
+.rev-name{font-weight:800;font-size:14.5px;letter-spacing:-.02em}
+.rev-stars{display:flex;gap:1px;color:#F5A623;margin-top:3px}
+.rev-text{font-size:13.5px;color:var(--ink-soft);line-height:1.55}
+.rev-ph{scroll-snap-align:start;flex:0 0 82%;max-width:320px;border:1px dashed var(--line-strong);border-radius:20px;display:grid;place-items:center;color:var(--ink-faint);font-size:12.5px;padding:26px 22px;text-align:center;line-height:1.5}
+
+/* ---------- telegram ---------- */
+.tg-card{background:var(--ink);color:#fff;border-radius:26px;padding:32px 26px;text-align:center;position:relative;overflow:hidden}
+.tg-card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 28% -10%,rgba(193,54,127,.55),transparent 58%);pointer-events:none}
+.tg-ic{width:62px;height:62px;margin:0 auto 15px;border-radius:19px;display:grid;place-items:center;background:linear-gradient(135deg,#2AABEE,#229ED9);position:relative;box-shadow:0 14px 34px -12px rgba(42,171,238,.6)}
+.tg-card h3{font-family:"Manrope";font-weight:800;font-size:22px;letter-spacing:-.02em;position:relative}
+.tg-card p{margin:10px auto 0;max-width:330px;font-size:14px;color:rgba(255,255,255,.74);line-height:1.55;position:relative}
+.tg-btn{display:inline-flex;align-items:center;gap:9px;margin-top:20px;padding:14px 26px;border-radius:15px;background:#fff;color:var(--ink);text-decoration:none;font-weight:800;font-size:15px;position:relative;transition:transform var(--dur) var(--ease-spring),box-shadow var(--dur) var(--ease-spring);box-shadow:0 14px 30px -14px rgba(0,0,0,.5)}
+.tg-btn:hover{transform:translateY(-2px)}
+.tg-btn:active{transform:translateY(0) scale(.98)}
+
+/* ---------- favorites ---------- */
+.tile .fav{position:absolute;top:8px;right:8px;width:32px;height:32px;border:none;border-radius:50%;cursor:pointer;background:rgba(255,255,255,.82);backdrop-filter:blur(6px);display:grid;place-items:center;color:var(--ink-soft);z-index:2;transition:transform var(--dur-fast) var(--ease-spring),color var(--dur-fast),background var(--dur-fast)}
+.tile .fav:hover{background:#fff}
+.tile .fav:active{transform:scale(.8)}
+.tile .fav.on{color:#fff;background:#E8365B}
+.fav-bar{display:none;align-items:center;justify-content:center;gap:9px;width:100%;margin-bottom:14px;padding:12px;border-radius:14px;border:1px solid var(--line-strong);background:var(--card);cursor:pointer;font-family:"Manrope";font-weight:700;font-size:14px;color:var(--ink);transition:background var(--dur-fast),border-color var(--dur-fast)}
+.fav-bar.show{display:flex}
+.fav-bar.active{background:var(--grad-soft);border-color:transparent}
+.fav-bar svg{color:#E8365B;flex:none}
+
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.io{opacity:1;transform:none}.tile{opacity:1;transform:none}.tile img{opacity:1}#preloader{display:none}}
 </style>
 </head>
@@ -348,6 +386,10 @@ body{
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
     </a>
     <p class="cta-note" data-reveal="4"><i></i>Уже доступна во всех наших магазинах</p>
+    <div style="text-align:center"><span class="countdown io" id="countdown" hidden>
+      <span class="cd-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8M12 2v3M5 9a7 7 0 1114 0v6a7 7 0 01-14 0z" transform="translate(0 1)"/><path d="M12 12v3"/></svg></span>
+      <span>До 1 сентября — <b id="cdDays"></b></span>
+    </span></div>
   </header>
 
   <!-- STORES -->
@@ -368,9 +410,30 @@ body{
       <button class="tab" role="tab" data-cat="girls" aria-selected="true">Девочки <span class="n" id="n-girls"></span></button>
       <button class="tab" role="tab" data-cat="boys" aria-selected="false">Мальчики <span class="n" id="n-boys"></span></button>
     </div>
+    <button class="fav-bar" id="favBar"></button>
     <div class="grid" id="grid"></div>
     <button class="more" id="more" hidden>Показать ещё <span class="r" id="more-r"></span></button>
     <div class="upd" id="upd"></div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="sec">
+    <div class="sec-h io"><h2>Отзывы</h2><div class="ln"></div><span class="cnt">Родители</span></div>
+    <div class="reviews io" id="reviews"></div>
+  </section>
+
+  <!-- TELEGRAM -->
+  <section class="sec">
+    <div class="tg-card io">
+      <div class="tg-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="#fff"><path d="M21.9 4.3l-3.2 15.1c-.24 1.06-.87 1.32-1.76.82l-4.86-3.58-2.35 2.26c-.26.26-.48.48-.98.48l.35-4.94L18 6.03c.39-.35-.09-.54-.6-.19L6.9 12.7l-4.9-1.53c-1.06-.33-1.08-1.06.22-1.57L20.5 2.8c.89-.33 1.66.2 1.4 1.5z"/></svg></div>
+      <h3>Мы в Telegram</h3>
+      <p>Подпишись — первым узнаешь о поступлениях, новинках и размерах. Напишем лично, когда приедет нужное для школы.</p>
+      <!-- ЗАМЕНИ на username своего бота из BotFather, напр. https://t.me/frantikby_bot?start=site -->
+      <a class="tg-btn" id="tgBtn" href="https://t.me/frantikby_bot?start=site" target="_blank" rel="noopener">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.3l-3.2 15.1c-.24 1.06-.87 1.32-1.76.82l-4.86-3.58-2.35 2.26c-.26.26-.48.48-.98.48l.35-4.94L18 6.03c.39-.35-.09-.54-.6-.19L6.9 12.7l-4.9-1.53c-1.06-.33-1.08-1.06.22-1.57L20.5 2.8c.89-.33 1.66.2 1.4 1.5z"/></svg>
+        Подписаться в Telegram
+      </a>
+    </div>
   </section>
 
   <!-- FOOTER -->
@@ -472,17 +535,37 @@ storesEl.innerHTML=STORES.map((s,i)=>{
 let CAT={girls:[],boys:[],updated:""};
 const grid=document.getElementById("grid"), moreBtn=document.getElementById("more"), moreR=document.getElementById("more-r");
 const BATCH=24;
-let current="girls", lbList=[], lbIdx=0, shown=0;
+let current="girls", lbList=[], lbIdx=0, shown=0, favMode=false;
+let favs=new Set(); try{favs=new Set(JSON.parse(localStorage.getItem("frantik_favs")||"[]"))}catch(e){}
+const favBar=document.getElementById("favBar");
+const HEART='<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9C.5 8.6 2 4.5 6 4.5c2.1 0 3.4 1.3 4 2.2.6-.9 1.9-2.2 4-2.2 4 0 5.5 4.1 4 7.5-2.5 4.4-10 9-10 9z"/></svg>';
+function currentItems(){return favMode?[...CAT.girls,...CAT.boys].filter(it=>favs.has(it.src)):(CAT[current]||[])}
+function saveFavs(){try{localStorage.setItem("frantik_favs",JSON.stringify([...favs]))}catch(e){}}
+function updateFavBar(){
+  const n=favs.size;
+  favBar.classList.toggle("show", n>0||favMode);
+  favBar.classList.toggle("active", favMode);
+  favBar.innerHTML=favMode?`${HEART} Показать всю коллекцию`:`${HEART} В избранном: ${n} · показать`;
+}
+function toggleFav(src,btn){
+  favs.has(src)?favs.delete(src):favs.add(src); saveFavs();
+  if(btn)btn.classList.toggle("on",favs.has(src));
+  updateFavBar();
+  if(favMode)renderGrid();
+}
+favBar.addEventListener("click",()=>{favMode=!favMode;updateFavBar();renderGrid()});
 const tileObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("seen");tileObs.unobserve(e.target)}}),{threshold:.06,rootMargin:"0px 0px -5% 0px"});
 function countUp(el,to){if(!to){el.textContent="";return}let t0=null;const d=900;
   requestAnimationFrame(function step(ts){t0=t0||ts;const p=Math.min(1,(ts-t0)/d);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(step)})}
 
 function tileHTML(it,i){
-  return `<button class="tile" data-i="${i}" aria-label="Открыть фото ${i+1}">
+  const on=favs.has(it.src)?" on":"";
+  return `<div class="tile" data-i="${i}" role="button" tabindex="0" aria-label="Открыть фото ${i+1}">
       <div class="sk"></div>
       <img loading="lazy" src="${it.src}" alt="Школьная коллекция — фото ${i+1}"
         onload="this.classList.add('on');const s=this.previousElementSibling;if(s)s.remove()">
-    </button>`;
+      <button class="fav${on}" data-fav="${it.src}" aria-label="В избранное"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9C.5 8.6 2 4.5 6 4.5c2.1 0 3.4 1.3 4 2.2.6-.9 1.9-2.2 4-2.2 4 0 5.5 4.1 4 7.5-2.5 4.4-10 9-10 9z"/></svg></button>
+    </div>`;
 }
 function renderMore(){
   const items=lbList, start=shown, next=items.slice(shown, shown+BATCH);
@@ -497,21 +580,23 @@ function renderMore(){
   moreBtn.hidden=left<=0;
   moreR.textContent=left>0?`ещё ${left}`:"";
 }
-function renderGrid(cat){
-  const items=CAT[cat]||[];
+function renderGrid(){
+  const items=currentItems();
   grid.innerHTML=""; shown=0; lbList=items;
   if(!items.length){
     moreBtn.hidden=true;
-    grid.innerHTML=`<div class="catalog-empty"><b>Скоро здесь появятся фото</b>Запустите синхронизацию папки Яндекс.Диска командой python3 sync.py — фото подтянутся автоматически.</div>`;
+    grid.innerHTML=favMode
+      ? `<div class="catalog-empty"><b>В избранном пока пусто</b>Жми на сердечко у фото — сохраним, чтобы показать в магазине.</div>`
+      : `<div class="catalog-empty"><b>Скоро здесь появятся фото</b>Запустите синхронизацию папки Яндекс.Диска командой python3 sync.py.</div>`;
     return;
   }
   renderMore();
 }
 moreBtn.addEventListener("click",renderMore);
 function setCat(cat){
-  current=cat;
+  current=cat; favMode=false; updateFavBar();
   document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.cat===cat));
-  renderGrid(cat);
+  renderGrid();
 }
 document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>setCat(t.dataset.cat)));
 
@@ -529,7 +614,11 @@ function openLb(i){lbIdx=i;showLb();lb.classList.add("on");document.body.style.o
 function closeLb(){lb.classList.remove("on");document.body.style.overflow=""}
 function showLb(){const it=lbList[lbIdx];if(!it)return;lbImg.src=it.full||it.src;lbCount.textContent=`${lbIdx+1} / ${lbList.length}`}
 function nav(d){lbIdx=(lbIdx+d+lbList.length)%lbList.length;showLb()}
-grid.addEventListener("click",e=>{const t=e.target.closest(".tile");if(t)openLb(+t.dataset.i)});
+grid.addEventListener("click",e=>{
+  const fb=e.target.closest(".fav");
+  if(fb){e.stopPropagation();toggleFav(fb.dataset.fav,fb);return;}
+  const t=e.target.closest(".tile");if(t)openLb(+t.dataset.i);
+});
 lb.querySelector(".lb-close").onclick=closeLb;
 lb.querySelector(".lb-prev").onclick=()=>nav(-1);
 lb.querySelector(".lb-next").onclick=()=>nav(1);
@@ -546,6 +635,30 @@ lb.addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});
 document.querySelectorAll(".io").forEach(el=>io.observe(el));
 document.getElementById("yr").textContent=new Date().getFullYear();
+
+/* ---------- countdown до 1 сентября ---------- */
+function plural(n,f){n=Math.abs(n)%100;const n1=n%10;if(n>10&&n<20)return f[2];if(n1>1&&n1<5)return f[1];if(n1===1)return f[0];return f[2]}
+(function(){
+  const el=document.getElementById("countdown"),d=document.getElementById("cdDays");
+  const now=new Date(),y=now.getFullYear();
+  let sep=new Date(y,8,1); if(now>new Date(y,8,1,23,59,59))sep=new Date(y+1,8,1);
+  const days=Math.ceil((sep-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5);
+  if(days>0&&days<=160){d.textContent=days+" "+plural(days,["день","дня","дней"]);el.hidden=false}
+})();
+
+/* ---------- отзывы (замени плейсхолдеры на реальные) ---------- */
+const REVIEWS=[
+  {name:"Ольга",r:5,text:"Брали школьную форму сыну в «Титане» — качество отличное, ткань плотная и не мнётся. Помогли подобрать размер, ребёнок в восторге."},
+  {name:"Марина",r:5,text:"Огромный выбор для девочек! Взяли сарафан и две блузки. Цены адекватные, обслуживание — душевное. Спасибо!"},
+  {name:"Дмитрий",r:5,text:"Удобно, что три точки по городу. Заехали в «Тивали», всё нашли за один раз к 1 сентября. Рекомендую."},
+  {name:"Екатерина",r:5,text:"Заказывали форму двум детям. Сидит идеально, стирается хорошо, вид сохраняет. Вернёмся ещё."}
+];
+(function(){
+  const box=document.getElementById("reviews");
+  const star='<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .6-5.3 4.6 1.6 6.8L12 17.3 5.7 20.5l1.6-6.8L2 9.1l7-.6z"/></svg>';
+  if(!REVIEWS.length){box.innerHTML='<div class="rev-ph">Здесь скоро появятся отзывы наших покупателей</div>';return}
+  box.innerHTML=REVIEWS.map(rv=>`<div class="rev"><div class="rev-top"><div class="rev-av">${rv.name[0]}</div><div><div class="rev-name">${rv.name}</div><div class="rev-stars">${star.repeat(rv.r)}</div></div></div><div class="rev-text">${rv.text}</div></div>`).join("");
+})();
 
 /* ---------- nearest-store finder ---------- */
 const COORDS={tivali:[53.907399,27.4846515],titan:[53.8607128,27.4789313],expobel:[53.9641148,27.6241136]};

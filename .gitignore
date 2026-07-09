@@ -4,3 +4,6 @@ preview-*.png
 .playwright-mcp/
 __pycache__/
 *.pyc
+
+# telegram bot data
+bot/subscribers.json
