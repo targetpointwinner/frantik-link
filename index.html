@@ -110,7 +110,7 @@ body{
   transition:transform var(--dur) var(--ease-spring),box-shadow var(--dur) var(--ease-spring);
 }
 .store:hover{transform:translateY(-2px);box-shadow:0 2px 4px rgba(28,22,34,.02),0 24px 48px -28px rgba(138,18,198,.35)}
-.store-media{position:relative;height:272px;border-radius:19px;overflow:hidden;background:var(--grad-soft)}
+.store-media{position:relative;height:312px;border-radius:19px;overflow:hidden;background:var(--grad-soft)}
 .store-media video,.store-media img{width:100%;height:100%;object-fit:cover;display:block}
 .store-media .noimg{position:absolute;inset:0;display:grid;place-items:center;background:var(--grad-soft)}
 .store-media .noimg span{font-family:"Fraunces";font-weight:900;font-size:34px;color:rgba(28,22,34,.22)}
@@ -201,11 +201,7 @@ body{
 .cta-primary{background:linear-gradient(115deg,var(--g1),var(--g2),var(--g3),var(--g2),var(--g1));background-size:300% 100%;
   animation:reveal .8s var(--ease-spring) .28s both, ctaflow 9s linear infinite}
 @keyframes ctaflow{to{background-position:-300% 0}}
-/* мягкий ореол ТОЛЬКО вокруг логотипа (прозрачная середина — не наезжает на знак) */
-.medallion::before{content:"";position:absolute;inset:-24%;border-radius:50%;z-index:-1;
-  background:radial-gradient(circle at 50% 50%,transparent 45%,rgba(232,92,84,.26) 54%,rgba(193,54,127,.22) 62%,rgba(138,18,198,.15) 71%,transparent 84%);
-  filter:blur(7px);animation:halo 5.5s ease-in-out infinite}
-@keyframes halo{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+/* без свечения — чистый знак */
 /* каскад появления плиток каталога */
 .tile{opacity:0;transform:translateY(20px) scale(.98)}
 .tile.seen{opacity:1;transform:none;transition:opacity .6s var(--ease-spring),transform .6s var(--ease-spring)}
@@ -235,8 +231,10 @@ body{
   transition:transform var(--dur) var(--ease-spring),box-shadow var(--dur) var(--ease-spring),border-color var(--dur)}
 .finder-cta:hover{transform:translateY(-2px);border-color:transparent;box-shadow:0 22px 44px -26px rgba(193,54,127,.42)}
 .finder-cta:active{transform:translateY(0) scale(.99)}
-.finder-cta .ic{width:44px;height:44px;flex:none;border-radius:13px;display:grid;place-items:center;background:var(--grad);color:#fff;
-  background-size:200% 100%;animation:ctaflow 9s linear infinite}
+.finder-cta .ic{width:44px;height:44px;flex:none;border-radius:13px;display:grid;place-items:center;background:var(--grad);color:#fff;position:relative;animation:icbob 3s ease-in-out infinite}
+.finder-cta .ic::after{content:"";position:absolute;inset:0;border-radius:inherit;border:2px solid var(--g2);opacity:0;animation:ping 2.4s var(--ease-soft) infinite}
+@keyframes ping{0%{transform:scale(1);opacity:.55}70%,100%{transform:scale(1.7);opacity:0}}
+@keyframes icbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
 .finder-cta .tx{flex:1;min-width:0}
 .finder-cta .tx b{display:block;font-family:"Fraunces";font-weight:700;font-size:16px;letter-spacing:-.01em}
 .finder-cta .tx span{font-size:12.5px;color:var(--ink-faint);font-weight:600}
@@ -276,8 +274,30 @@ body{
 .cal{margin-top:18px;padding-top:18px;border-top:1px solid var(--line);text-align:left}
 .cal-h{font-family:"Fraunces";font-weight:700;font-size:16px;text-align:center;margin-bottom:4px}
 .cal-sub{text-align:center;font-size:12.5px;color:var(--ink-faint);margin-bottom:14px}
-.cal-date{width:100%;padding:13px 14px;border-radius:13px;border:1px solid var(--line-strong);background:var(--card);font-family:"Manrope";font-size:15px;color:var(--ink);outline:none}
-.cal-date:focus{border-color:var(--g2)}
+/* кастомный date-picker */
+.dp{position:relative}
+.dp-field{display:flex;align-items:center;gap:10px;width:100%;padding:13px 14px;border-radius:13px;cursor:pointer;
+  border:1px solid var(--line-strong);background:var(--card);font-family:"Manrope";font-size:15px;font-weight:600;color:var(--ink);transition:border-color var(--dur-fast)}
+.dp-field:hover{border-color:var(--ink-faint)}
+.dp-field.open{border-color:var(--g2)}
+.dp-field>span{flex:1;text-align:left}
+.dp-field .dp-chev{color:var(--ink-faint);transition:transform var(--dur-fast)}
+.dp-field.open .dp-chev{transform:rotate(180deg)}
+.dp-pop{margin-top:8px;padding:14px;border-radius:18px;background:var(--card);border:1px solid var(--line);box-shadow:0 20px 44px -22px rgba(28,22,34,.4);animation:pop .3s var(--ease-spring)}
+.dp-pop[hidden]{display:none}
+.dp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.dp-title{font-family:"Fraunces";font-weight:700;font-size:15.5px;text-transform:capitalize}
+.dp-nav{width:32px;height:32px;border:none;border-radius:10px;cursor:pointer;background:var(--bg-warm);color:var(--ink-soft);display:grid;place-items:center;transition:background var(--dur-fast)}
+.dp-nav:hover{background:var(--grad-soft);color:var(--ink)}
+.dp-week{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px}
+.dp-week span{text-align:center;font-size:10.5px;font-weight:800;color:var(--ink-faint);text-transform:uppercase;padding:4px 0}
+.dp-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.dp-day{aspect-ratio:1;border:none;background:none;cursor:pointer;border-radius:10px;font-family:"Manrope";font-weight:600;font-size:13.5px;color:var(--ink);transition:background var(--dur-fast),color var(--dur-fast)}
+.dp-day:hover:not(:disabled):not(.sel){background:var(--grad-soft)}
+.dp-day:disabled{color:var(--line-strong);cursor:default}
+.dp-day.today{box-shadow:inset 0 0 0 1.5px var(--line-strong)}
+.dp-day.sel{background:var(--grad);color:#fff;font-weight:800;box-shadow:0 8px 20px -8px rgba(193,54,127,.6)}
+.dp-day.blank{visibility:hidden}
 .cal-lbl{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);margin:14px 0 8px}
 .cal-chips{display:flex;gap:8px}
 .cal-chip{flex:1;padding:11px 6px;border-radius:12px;border:1px solid var(--line-strong);background:var(--card);cursor:pointer;font-family:"Manrope";font-weight:700;font-size:12.5px;color:var(--ink-soft);transition:background var(--dur-fast),color var(--dur-fast),border-color var(--dur-fast)}
@@ -559,9 +579,24 @@ function showResult(lat,lon){
       </div>
     </div>
     <div class="cal">
-      <div class="cal-h">Напомнить о нас?</div>
-      <div class="cal-sub">Добавим в твой календарь — Apple или Android</div>
-      <input type="date" id="calDate" class="cal-date">
+      <div class="cal-h">В какой день зайдёшь к нам в гости?</div>
+      <div class="cal-sub">Добавим в календарь и мягко напомним — Apple или Android</div>
+      <div class="dp" id="dp">
+        <button type="button" class="dp-field" id="dpField">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <span id="dpLabel">Выбери дату</span>
+          <svg class="dp-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="dp-pop" id="dpPop" hidden>
+          <div class="dp-head">
+            <button type="button" class="dp-nav" id="dpPrev" aria-label="Назад"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <div class="dp-title" id="dpTitle"></div>
+            <button type="button" class="dp-nav" id="dpNext" aria-label="Вперёд"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+          </div>
+          <div class="dp-week"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span></div>
+          <div class="dp-grid" id="dpGrid"></div>
+        </div>
+      </div>
       <div class="cal-lbl">Напомнить</div>
       <div class="cal-chips">
         <button class="cal-chip" data-r="2" aria-pressed="true">За 2 дня</button>
@@ -578,19 +613,55 @@ function showResult(lat,lon){
   fAsk.hidden=true;fRes.hidden=false;
   document.getElementById("finderAgain").onclick=()=>{fRes.hidden=true;fAsk.hidden=false;fErr.textContent=""};
   // календарь
-  const dEl=document.getElementById("calDate");
-  const dflt=new Date(Date.now()+7*864e5);
-  dEl.value=dflt.toISOString().slice(0,10); dEl.min=new Date().toISOString().slice(0,10);
+  initDatePicker();
   fRes.querySelectorAll(".cal-chip").forEach(c=>c.addEventListener("click",()=>c.setAttribute("aria-pressed",c.getAttribute("aria-pressed")!=="true")));
   document.getElementById("calAdd").onclick=()=>addToCalendar(s);
   confetti();
 }
+/* ---------- кастомный date-picker ---------- */
+const MONTHS=["январь","февраль","март","апрель","май","июнь","июль","август","сентябрь","октябрь","ноябрь","декабрь"];
+const MONTHS_GEN=["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+let calSel=null, calView=null;
+function initDatePicker(){
+  calSel=new Date(Date.now()+7*864e5); calSel.setHours(0,0,0,0);
+  calView=new Date(calSel.getFullYear(),calSel.getMonth(),1);
+  const field=document.getElementById("dpField"),pop=document.getElementById("dpPop");
+  field.onclick=()=>{const op=pop.hidden;pop.hidden=!op;field.classList.toggle("open",op)};
+  document.getElementById("dpPrev").onclick=()=>{calView.setMonth(calView.getMonth()-1);renderDP()};
+  document.getElementById("dpNext").onclick=()=>{calView.setMonth(calView.getMonth()+1);renderDP()};
+  renderDP(); updateDPLabel();
+}
+function updateDPLabel(){
+  const d=calSel, l=document.getElementById("dpLabel");
+  l.textContent=`${d.getDate()} ${MONTHS_GEN[d.getMonth()]} ${d.getFullYear()}`;
+}
+function renderDP(){
+  const today=new Date();today.setHours(0,0,0,0);
+  document.getElementById("dpTitle").textContent=`${MONTHS[calView.getMonth()]} ${calView.getFullYear()}`;
+  const y=calView.getFullYear(),m=calView.getMonth();
+  const first=new Date(y,m,1), lead=(first.getDay()+6)%7; // Пн=0
+  const days=new Date(y,m+1,0).getDate();
+  let html="";
+  for(let i=0;i<lead;i++) html+=`<button type="button" class="dp-day blank" disabled></button>`;
+  for(let d=1;d<=days;d++){
+    const dt=new Date(y,m,d), past=dt<today;
+    const sel=dt.getTime()===calSel.getTime(), isToday=dt.getTime()===today.getTime();
+    html+=`<button type="button" class="dp-day${sel?' sel':''}${isToday?' today':''}" data-d="${d}"${past?" disabled":""}>${d}</button>`;
+  }
+  const grid=document.getElementById("dpGrid"); grid.innerHTML=html;
+  grid.querySelectorAll(".dp-day[data-d]").forEach(b=>b.onclick=()=>{
+    calSel=new Date(y,m,+b.dataset.d); calSel.setHours(0,0,0,0);
+    updateDPLabel(); document.getElementById("dpPop").hidden=true; document.getElementById("dpField").classList.remove("open");
+    const done=document.getElementById("calDone"); if(done)done.textContent="";
+    renderDP();
+  });
+}
 function pad(n){return String(n).padStart(2,"0")}
 function addToCalendar(s){
-  const dEl=document.getElementById("calDate"),done=document.getElementById("calDone");
-  if(!dEl.value){done.style.color="#D64550";done.textContent="Выбери дату";return}
+  const done=document.getElementById("calDone");
+  if(!calSel){done.style.color="#D64550";done.textContent="Выбери дату";return}
   const rem=[...fRes.querySelectorAll('.cal-chip[aria-pressed="true"]')].map(c=>+c.dataset.r);
-  const [Y,M,D]=dEl.value.split("-").map(Number);
+  const Y=calSel.getFullYear(),M=calSel.getMonth()+1,D=calSel.getDate();
   const dt=`${Y}${pad(M)}${pad(D)}`;
   const now=new Date(),stamp=`${now.getUTCFullYear()}${pad(now.getUTCMonth()+1)}${pad(now.getUTCDate())}T${pad(now.getUTCHours())}${pad(now.getUTCMinutes())}${pad(now.getUTCSeconds())}Z`;
   const trig={2:"-P2D",1:"-P1D",0:"-PT0M"};
