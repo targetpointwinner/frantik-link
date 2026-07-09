@@ -1,0 +1,6 @@
+.DS_Store
+sync.log
+preview-*.png
+.playwright-mcp/
+__pycache__/
+*.pyc

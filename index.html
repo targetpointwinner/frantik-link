@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>frantik.by — детская и подростковая одежда · Минск</title>
+<meta name="description" content="Frantik.by — магазины детской и подростковой одежды в Минске. Адреса, часы работы, школьная коллекция 2026/2027.">
+<meta name="theme-color" content="#FBF7F4">
+<link rel="icon" type="image/png" href="assets/mark.png">
+<link rel="apple-touch-icon" href="assets/mark.png">
+<meta property="og:title" content="frantik.by — детская и подростковая одежда">
+<meta property="og:description" content="Адреса магазинов в Минске и школьная коллекция 2026/2027 — мальчики и девочки.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* palette — light playful-premium */
+  --bg:#FBF7F4;
+  --bg-warm:#F4ECE6;
+  --ink:#1C1622;
+  --ink-soft:#5B5266;
+  --ink-faint:#8E8698;
+  --card:#FFFFFF;
+  --line:rgba(28,22,34,.08);
+  --line-strong:rgba(28,22,34,.14);
+  /* brand gradient: coral → magenta → violet (из логотипа FRANTIK.BY) */
+  --g1:#E85C54;  /* coral   */
+  --g2:#C1367F;  /* magenta */
+  --g3:#8A12C6;  /* violet  */
+  --grad:linear-gradient(115deg,var(--g1) 0%,var(--g2) 50%,var(--g3) 100%);
+  --grad-soft:linear-gradient(115deg,rgba(232,92,84,.14),rgba(193,54,127,.12) 50%,rgba(138,18,198,.14));
+  /* motion */
+  --ease-spring:cubic-bezier(.16,1,.3,1);
+  --ease-soft:cubic-bezier(.4,0,.2,1);
+  --dur-fast:.18s; --dur:.4s; --dur-slow:.8s;
+  --shell:520px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:"Manrope",system-ui,sans-serif;
+  color:var(--ink);
+  background:var(--bg);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+/* atmospheric background — soft single-color gradient blobs + grain */
+.bg{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;mix-blend-mode:multiply}
+.blob.a{width:60vw;height:60vw;top:-18vw;left:-14vw;background:radial-gradient(circle,var(--g1),transparent 68%)}
+.blob.b{width:52vw;height:52vw;top:12vh;right:-20vw;background:radial-gradient(circle,var(--g2),transparent 66%);opacity:.4}
+.blob.c{width:64vw;height:64vw;bottom:-22vw;left:8vw;background:radial-gradient(circle,var(--g3),transparent 68%);opacity:.42}
+.grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.045;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+.shell{max-width:var(--shell);margin:0 auto;padding:0 20px calc(48px + env(safe-area-inset-bottom))}
+
+/* ---------- hero ---------- */
+.hero{padding:52px 0 8px;text-align:center}
+.medallion{
+  --s:132px;width:var(--s);height:var(--s);margin:0 auto 22px;position:relative;
+  border-radius:50%;padding:5px;background:var(--grad);
+  box-shadow:0 18px 50px -18px rgba(193,54,127,.55),0 0 0 1px rgba(255,255,255,.6) inset;
+  animation:float 7s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.medallion .disc{width:100%;height:100%;border-radius:50%;overflow:hidden;background:var(--card);display:grid;place-items:center}
+.medallion img,.medallion video{width:100%;height:100%;object-fit:cover;display:block}
+.medallion .ph{font-family:"Fraunces";font-weight:900;font-size:34px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+.brand{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(46px,15vw,68px);line-height:.92;letter-spacing:-.02em;margin:2px 0}
+.brand .dot{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.wordmark{display:block;width:min(310px,74vw);height:auto;margin:0 auto}
+.tag{margin-top:14px;font-weight:600;font-size:15px;color:var(--ink-soft);letter-spacing:.01em}
+.tag b{color:var(--ink)}
+.pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.pill{font-size:12.5px;font-weight:700;letter-spacing:.02em;padding:7px 13px;border-radius:999px;background:var(--card);border:1px solid var(--line);color:var(--ink-soft)}
+
+/* primary CTA */
+.cta-primary{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  margin:30px 0 6px;width:100%;padding:19px 22px;border:none;cursor:pointer;
+  border-radius:20px;background:var(--grad);color:#fff;text-decoration:none;
+  font-family:"Manrope";font-weight:800;font-size:16.5px;letter-spacing:.01em;
+  box-shadow:0 16px 40px -14px rgba(193,54,127,.6);
+  transition:transform var(--dur) var(--ease-spring),box-shadow var(--dur) var(--ease-spring);
+  position:relative;overflow:hidden;
+}
+.cta-primary::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-120%);transition:transform .7s var(--ease-soft)}
+.cta-primary:hover{transform:translateY(-2px);box-shadow:0 22px 50px -14px rgba(193,54,127,.7)}
+.cta-primary:hover::after{transform:translateX(120%)}
+.cta-primary:active{transform:translateY(0) scale(.99)}
+.cta-primary svg{flex:none}
+
+/* ---------- section heading ---------- */
+.sec{margin-top:44px}
+.sec-h{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.sec-h h2{font-family:"Fraunces";font-weight:700;font-size:22px;letter-spacing:-.01em;white-space:nowrap}
+.sec-h .ln{flex:1;height:1px;background:var(--line-strong)}
+.sec-h .cnt{font-size:12px;font-weight:800;color:var(--ink-faint);letter-spacing:.06em;text-transform:uppercase}
+
+/* ---------- store cards ---------- */
+.store{
+  background:var(--card);border:1px solid var(--line);border-radius:24px;
+  padding:6px;margin-bottom:16px;overflow:hidden;
+  box-shadow:0 2px 4px rgba(28,22,34,.02),0 16px 40px -30px rgba(28,22,34,.4);
+  transition:transform var(--dur) var(--ease-spring),box-shadow var(--dur) var(--ease-spring);
+}
+.store:hover{transform:translateY(-2px);box-shadow:0 2px 4px rgba(28,22,34,.02),0 24px 48px -28px rgba(138,18,198,.35)}
+.store-media{position:relative;height:132px;border-radius:19px;overflow:hidden;background:var(--grad-soft)}
+.store-media video,.store-media img{width:100%;height:100%;object-fit:cover;display:block}
+.store-media .noimg{position:absolute;inset:0;display:grid;place-items:center;background:var(--grad-soft)}
+.store-media .noimg span{font-family:"Fraunces";font-weight:900;font-size:26px;color:rgba(28,22,34,.22)}
+.store-media .badge{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);padding:7px 12px;border-radius:999px;font-weight:800;font-size:12.5px;letter-spacing:.02em;display:flex;align-items:center;gap:6px}
+.store-media .badge i{width:7px;height:7px;border-radius:50%;background:#22C55E;box-shadow:0 0 0 3px rgba(34,197,94,.2)}
+.store-body{padding:16px 14px 8px}
+.store-name{font-family:"Fraunces";font-weight:700;font-size:19px;letter-spacing:-.01em}
+.store-meta{margin-top:8px;display:flex;flex-direction:column;gap:6px}
+.store-meta div{display:flex;gap:9px;font-size:13.5px;color:var(--ink-soft);line-height:1.35}
+.store-meta svg{flex:none;margin-top:2px;color:var(--ink-faint)}
+.store-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 8px 8px}
+.act{
+  display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;cursor:pointer;
+  padding:13px 12px;border-radius:15px;font-weight:700;font-size:14px;letter-spacing:.01em;
+  transition:transform var(--dur-fast) var(--ease-spring),background var(--dur-fast),border-color var(--dur-fast);
+}
+.act:active{transform:scale(.97)}
+.act.map{background:var(--bg-warm);color:var(--ink);border:1px solid var(--line)}
+.act.map:hover{border-color:var(--line-strong);background:#EFE6DF}
+.act.call{background:var(--ink);color:#fff;border:1px solid var(--ink)}
+.act.call:hover{background:#000}
+.act svg{flex:none}
+
+/* ---------- catalog ---------- */
+.tabs{display:flex;gap:8px;background:var(--card);border:1px solid var(--line);padding:6px;border-radius:18px;margin-bottom:18px}
+.tab{flex:1;border:none;background:transparent;cursor:pointer;font-family:"Manrope";font-weight:700;font-size:15px;color:var(--ink-soft);padding:12px;border-radius:13px;transition:color var(--dur-fast),background var(--dur-fast);display:flex;align-items:center;justify-content:center;gap:8px}
+.tab .n{font-size:11.5px;font-weight:800;opacity:.6}
+.tab[aria-selected="true"]{color:#fff;background:var(--grad);box-shadow:0 10px 26px -12px rgba(193,54,127,.6)}
+.tab[aria-selected="true"] .n{opacity:.85}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{position:relative;border-radius:18px;overflow:hidden;background:var(--bg-warm);border:1px solid var(--line);cursor:pointer;aspect-ratio:3/4;
+  transition:transform var(--dur) var(--ease-spring),box-shadow var(--dur) var(--ease-spring)}
+.tile img{width:100%;height:100%;object-fit:cover;display:block;transition:transform var(--dur-slow) var(--ease-spring);opacity:0}
+.tile img.on{opacity:1}
+.tile:hover{transform:translateY(-3px);box-shadow:0 20px 40px -22px rgba(138,18,198,.5)}
+.tile:hover img{transform:scale(1.05)}
+.tile .sk{position:absolute;inset:0;background:linear-gradient(100deg,var(--bg-warm) 30%,#efe6de 50%,var(--bg-warm) 70%);background-size:200% 100%;animation:sh 1.4s infinite}
+@keyframes sh{to{background-position:-200% 0}}
+.tile.wide{grid-column:span 2;aspect-ratio:3/2}
+.catalog-empty{grid-column:span 2;text-align:center;padding:40px 20px;border:1px dashed var(--line-strong);border-radius:20px;color:var(--ink-faint)}
+.catalog-empty b{display:block;color:var(--ink-soft);font-family:"Fraunces";font-size:18px;margin-bottom:6px}
+.more{display:flex;align-items:center;justify-content:center;gap:9px;margin:18px auto 0;width:100%;padding:15px;border-radius:16px;cursor:pointer;
+  background:var(--card);border:1px solid var(--line-strong);color:var(--ink);font-family:"Manrope";font-weight:700;font-size:14.5px;
+  transition:transform var(--dur-fast) var(--ease-spring),border-color var(--dur-fast),background var(--dur-fast)}
+.more:hover{border-color:transparent;background:var(--grad-soft)}
+.more:active{transform:scale(.98)}
+.more .r{font-size:12px;font-weight:800;color:var(--ink-faint)}
+.more[hidden]{display:none}
+.upd{text-align:center;font-size:12px;color:var(--ink-faint);margin-top:16px;letter-spacing:.02em}
+
+/* ---------- lightbox ---------- */
+.lb{position:fixed;inset:0;z-index:60;background:rgba(20,15,26,.86);backdrop-filter:blur(6px);display:none;place-items:center;padding:20px}
+.lb.on{display:grid;animation:fade var(--dur) var(--ease-soft)}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.lb img{max-width:100%;max-height:82vh;border-radius:14px;box-shadow:0 30px 80px -20px rgba(0,0,0,.6)}
+.lb-btn{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;border:none;background:rgba(255,255,255,.14);color:#fff;cursor:pointer;display:grid;place-items:center;transition:background var(--dur-fast)}
+.lb-btn:hover{background:rgba(255,255,255,.26)}
+.lb-prev{left:14px}.lb-next{right:14px}
+.lb-close{position:absolute;top:16px;right:16px;top:calc(16px + env(safe-area-inset-top))}
+.lb-count{position:absolute;bottom:calc(20px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;color:rgba(255,255,255,.8);font-weight:700;font-size:14px;letter-spacing:.05em}
+
+/* ---------- footer ---------- */
+.foot{margin-top:52px;text-align:center;color:var(--ink-faint);font-size:12.5px}
+.foot .m{font-family:"Fraunces";font-weight:700;font-size:16px;color:var(--ink-soft);margin-bottom:6px}
+.foot a{color:var(--ink-soft);text-decoration:none;border-bottom:1px solid var(--line-strong)}
+
+/* reveal */
+[data-reveal]{opacity:0;transform:translateY(22px);animation:reveal .8s var(--ease-spring) forwards}
+[data-reveal="1"]{animation-delay:.05s}[data-reveal="2"]{animation-delay:.12s}
+[data-reveal="3"]{animation-delay:.2s}[data-reveal="4"]{animation-delay:.28s}
+[data-reveal="5"]{animation-delay:.36s}
+@keyframes reveal{to{opacity:1;transform:none}}
+.io{opacity:0;transform:translateY(24px)}
+.io.in{opacity:1;transform:none;transition:opacity .7s var(--ease-spring),transform .7s var(--ease-spring)}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.io{opacity:1;transform:none}.tile img{opacity:1}}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"><div class="blob a"></div><div class="blob b"></div><div class="blob c"></div></div>
+<div class="grain" aria-hidden="true"></div>
+
+<main class="shell">
+  <!-- HERO -->
+  <header class="hero">
+    <div class="medallion" data-reveal="1">
+      <div class="disc">
+        <img src="assets/mark.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+        <div class="ph" style="display:none">f</div>
+      </div>
+    </div>
+    <h1 class="brand" data-reveal="2">
+      <img class="wordmark" src="assets/wordmark.png" alt="FRANTIK.BY — детская и подростковая одежда"
+        onerror="this.outerHTML='frantik<span class=&quot;dot&quot;>.</span>by'">
+    </h1>
+    <p class="tag" data-reveal="3">Минск · <b>3 магазина</b> · школьная коллекция 2026/2027</p>
+    <div class="pills" data-reveal="3">
+      <span class="pill">Школьная форма</span>
+      <span class="pill">Повседневное</span>
+      <span class="pill">2–16 лет</span>
+    </div>
+    <a href="#catalog" class="cta-primary" data-reveal="4">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v6l9 4 9-4V7"/><path d="M12 11v6"/></svg>
+      Школьная коллекция 2026/2027
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
+  </header>
+
+  <!-- STORES -->
+  <section class="sec">
+    <div class="sec-h io"><h2>Наши магазины</h2><div class="ln"></div><span class="cnt">Минск</span></div>
+    <div id="stores"></div>
+  </section>
+
+  <!-- CATALOG -->
+  <section class="sec" id="catalog">
+    <div class="sec-h io"><h2>Школьная коллекция</h2><div class="ln"></div><span class="cnt">26/27</span></div>
+    <div class="tabs io" role="tablist">
+      <button class="tab" role="tab" data-cat="girls" aria-selected="true">Девочки <span class="n" id="n-girls"></span></button>
+      <button class="tab" role="tab" data-cat="boys" aria-selected="false">Мальчики <span class="n" id="n-boys"></span></button>
+    </div>
+    <div class="grid" id="grid"></div>
+    <button class="more" id="more" hidden>Показать ещё <span class="r" id="more-r"></span></button>
+    <div class="upd" id="upd"></div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="foot io">
+    <div class="m">frantik<span style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">.by</span></div>
+    <div>Детская и подростковая одежда в Минске</div>
+    <div style="margin-top:8px">© <span id="yr"></span> · <a href="https://instagram.com/frantik.by" target="_blank" rel="noopener">Instagram</a></div>
+  </footer>
+</main>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lb" role="dialog" aria-modal="true">
+  <button class="lb-btn lb-close" aria-label="Закрыть"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <button class="lb-btn lb-prev" aria-label="Назад"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <img id="lb-img" alt="">
+  <button class="lb-btn lb-next" aria-label="Вперёд"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+  <div class="lb-count" id="lb-count"></div>
+</div>
+
+<script>
+/* ---------- data ---------- */
+const STORES=[
+  {id:"tivali",name:'ТЦ «Тивали»',addr:"ул. Притыцкого 29, этаж 3, место 316",hours:"10:00 – 20:00 · без выходных",open:true,
+   map:"https://www.google.com/maps/place/Tivali+Mall/@53.907399,27.4846515,17z",tel:"+375291076930",telView:"+375 29 107-69-30"},
+  {id:"titan",name:'ТЦ «Титан»',addr:"пр. Дзержинского 104, этаж 3, место 112",hours:"10:00 – 21:00 · без выходных",open:true,
+   map:"https://www.google.com/maps/place/Titan/@53.8607128,27.4789313,17z",tel:"+375296747826",telView:"+375 29 674-78-26"},
+  {id:"expobel",name:'Рынок «Экспобел»',addr:"2 этаж, выход В6, ряд С, т.м 11",hours:"10:00 – 19:00 · пн — выходной",open:true,
+   map:"https://www.google.com/maps/place/Expobel+Mall/@53.9641148,27.6241136,17z",tel:"+375296747826",telView:"+375 29 674-78-26",person:"Алёна"},
+];
+const IC={
+  pin:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+  clock:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  route:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20l-5-2V6l5 2m0 12l6-2m-6 2V8m6 10l5 2V8l-5-2m0 12V6m0 0L9 8"/></svg>',
+  phone:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3.1-8.7A2 2 0 014 2h3a2 2 0 012 1.7c.1 1 .4 1.9.7 2.8a2 2 0 01-.5 2.1L8 9.9a16 16 0 006 6l1.3-1.2a2 2 0 012.1-.5c.9.3 1.8.6 2.8.7a2 2 0 011.7 2z"/></svg>',
+};
+/* ---------- render stores ---------- */
+const storesEl=document.getElementById("stores");
+storesEl.innerHTML=STORES.map((s,i)=>`
+  <article class="store io" style="transition-delay:${i*70}ms">
+    <div class="store-media">
+      <video src="assets/stores/${s.id}.mp4" muted loop playsinline autoplay preload="none"
+        onerror="this.style.display='none';this.parentElement.querySelector('.noimg').style.display='grid'"></video>
+      <div class="noimg" style="display:none"><span>${s.name.replace(/[«»"]/g,'').trim().split(' ').pop()}</span></div>
+      <div class="badge"><i></i>Открыто сейчас</div>
+    </div>
+    <div class="store-body">
+      <div class="store-name">${s.name}</div>
+      <div class="store-meta">
+        <div>${IC.pin}<span>${s.addr}</span></div>
+        <div>${IC.clock}<span>${s.hours}</span></div>
+        ${s.person?`<div>${IC.phone}<span>Спросить <b style="color:var(--ink);font-weight:700">${s.person}</b></span></div>`:""}
+      </div>
+    </div>
+    <div class="store-actions">
+      <a class="act map" href="${s.map}" target="_blank" rel="noopener">${IC.route} Как добраться</a>
+      <a class="act call" href="tel:${s.tel}">${IC.phone} ${s.telView}</a>
+    </div>
+  </article>`).join("");
+
+/* ---------- catalog ---------- */
+let CAT={girls:[],boys:[],updated:""};
+const grid=document.getElementById("grid"), moreBtn=document.getElementById("more"), moreR=document.getElementById("more-r");
+const BATCH=24;
+let current="girls", lbList=[], lbIdx=0, shown=0;
+
+function tileHTML(it,i){
+  return `<button class="tile" data-i="${i}" aria-label="Открыть фото ${i+1}">
+      <div class="sk"></div>
+      <img loading="lazy" src="${it.src}" alt="Школьная коллекция — фото ${i+1}"
+        onload="this.classList.add('on');const s=this.previousElementSibling;if(s)s.remove()">
+    </button>`;
+}
+function renderMore(){
+  const items=lbList, next=items.slice(shown, shown+BATCH);
+  grid.insertAdjacentHTML("beforeend", next.map((it,k)=>tileHTML(it,shown+k)).join(""));
+  shown+=next.length;
+  const left=items.length-shown;
+  moreBtn.hidden=left<=0;
+  moreR.textContent=left>0?`ещё ${left}`:"";
+}
+function renderGrid(cat){
+  const items=CAT[cat]||[];
+  grid.innerHTML=""; shown=0; lbList=items;
+  if(!items.length){
+    moreBtn.hidden=true;
+    grid.innerHTML=`<div class="catalog-empty"><b>Скоро здесь появятся фото</b>Запустите синхронизацию папки Яндекс.Диска командой python3 sync.py — фото подтянутся автоматически.</div>`;
+    return;
+  }
+  renderMore();
+}
+moreBtn.addEventListener("click",renderMore);
+function setCat(cat){
+  current=cat;
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.cat===cat));
+  renderGrid(cat);
+}
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>setCat(t.dataset.cat)));
+
+fetch("catalog.json").then(r=>r.ok?r.json():Promise.reject()).then(d=>{
+  CAT={girls:d.girls||[],boys:d.boys||[],updated:d.updated||""};
+  document.getElementById("n-girls").textContent=CAT.girls.length||"";
+  document.getElementById("n-boys").textContent=CAT.boys.length||"";
+  if(CAT.updated) document.getElementById("upd").textContent="Обновлено: "+CAT.updated;
+  setCat(CAT.girls.length||!CAT.boys.length?"girls":"boys");
+}).catch(()=>setCat("girls"));
+
+/* ---------- lightbox ---------- */
+const lb=document.getElementById("lb"),lbImg=document.getElementById("lb-img"),lbCount=document.getElementById("lb-count");
+function openLb(i){lbIdx=i;showLb();lb.classList.add("on");document.body.style.overflow="hidden"}
+function closeLb(){lb.classList.remove("on");document.body.style.overflow=""}
+function showLb(){const it=lbList[lbIdx];if(!it)return;lbImg.src=it.full||it.src;lbCount.textContent=`${lbIdx+1} / ${lbList.length}`}
+function nav(d){lbIdx=(lbIdx+d+lbList.length)%lbList.length;showLb()}
+grid.addEventListener("click",e=>{const t=e.target.closest(".tile");if(t)openLb(+t.dataset.i)});
+lb.querySelector(".lb-close").onclick=closeLb;
+lb.querySelector(".lb-prev").onclick=()=>nav(-1);
+lb.querySelector(".lb-next").onclick=()=>nav(1);
+lb.addEventListener("click",e=>{if(e.target===lb)closeLb()});
+document.addEventListener("keydown",e=>{if(!lb.classList.contains("on"))return;if(e.key==="Escape")closeLb();if(e.key==="ArrowLeft")nav(-1);if(e.key==="ArrowRight")nav(1)});
+// свайп в лайтбоксе (мобайл)
+let tx=0,ty=0;
+lb.addEventListener("touchstart",e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+lb.addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy))nav(dx<0?1:-1);
+  else if(dy>70&&Math.abs(dy)>Math.abs(dx))closeLb();},{passive:true});
+
+/* ---------- scroll reveal ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll(".io").forEach(el=>io.observe(el));
+document.getElementById("yr").textContent=new Date().getFullYear();
+</script>
+</body>
+</html>
