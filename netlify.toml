@@ -1,0 +1,15 @@
+# Статический сайт — публикуем корень, сборка не нужна
+[build]
+  publish = "."
+  command = ""
+
+# Кэш фото каталога надолго (имена стабильные)
+[[headers]]
+  for = "/catalog/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
