@@ -648,8 +648,8 @@ function shareFavsToTelegram(){
   const base=location.origin+location.pathname.replace(/[^/]*$/,"");
   const links=liked.slice(0,20).map((it,i)=>`${i+1}. ${base}${it.src}`).join("\n");
   const text=`Здравствуйте, Алёна! Мне понравились эти образы из школьной коллекции frantik.by (${liked.length} шт.). Подскажите, пожалуйста, размеры и цены:\n\n${links}`;
-  window.open(TG_CONTACT,"_blank"); // открываем чат Алёны (в жесте пользователя, без блокировки попапа)
-  if(navigator.clipboard) navigator.clipboard.writeText(text).then(()=>toast("Сообщение с образами скопировано — вставьте в чат Алёне и отправьте")).catch(()=>{});
+  // share/url — Telegram сам подтягивает текст в чат (человек выбирает диалог, напр. Алёну)
+  window.open(`https://t.me/share/url?url=${encodeURIComponent(base)}&text=${encodeURIComponent(text)}`,"_blank");
 }
 function openFavPrompt(){favPrompt.classList.add("on");document.body.style.overflow="hidden"}
 function closeFavPrompt(){favPrompt.classList.remove("on");document.body.style.overflow=""}
@@ -770,15 +770,20 @@ fetch("reviews.json").then(r=>r.ok?r.json():Promise.reject()).then(d=>{
 }).catch(()=>revBoxes.forEach(b=>b.innerHTML='<div class="stories-ph">Отзывы скоро появятся здесь</div>'));
 function startMarquee(el){
   if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
-  const SPEED=0.35; // px/кадр, справа налево (лента уплывает влево)
-  let paused=false;
+  const SPEED=0.45; // px/кадр, справа налево (лента уплывает влево)
+  let paused=false, pos=0;
   const pause=()=>{paused=true};
   const resume=()=>{clearTimeout(el._rt);el._rt=setTimeout(()=>{paused=false},1400)};
   el.addEventListener("mouseenter",pause); el.addEventListener("mouseleave",()=>{paused=false});
   el.addEventListener("touchstart",pause,{passive:true}); el.addEventListener("touchend",resume,{passive:true});
   el.addEventListener("wheel",()=>{pause();resume()},{passive:true});
   (function step(){
-    if(!paused){el.scrollLeft+=SPEED;const half=el.scrollWidth/2;if(half>0&&el.scrollLeft>=half)el.scrollLeft-=half}
+    if(paused){ pos=el.scrollLeft; }           // синхрон при ручном листании
+    else {
+      const half=el.scrollWidth/2;
+      pos+=SPEED; if(half>0&&pos>=half)pos-=half;
+      el.scrollLeft=pos;                        // копим в pos (scrollLeft округляет — потеря sub-px)
+    }
     requestAnimationFrame(step);
   })();
 }
