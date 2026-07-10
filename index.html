@@ -313,17 +313,33 @@ body{
 .countdown .cd-ico{display:grid;place-items:center;color:var(--g2)}
 .countdown[hidden]{display:none}
 
-/* ---------- reviews ---------- */
-.reviews{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -20px;padding:2px 20px 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.reviews::-webkit-scrollbar{display:none}
-.rev{scroll-snap-align:start;flex:0 0 82%;max-width:320px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;
-  box-shadow:0 2px 4px rgba(28,22,34,.02),0 16px 40px -32px rgba(28,22,34,.4)}
-.rev-top{display:flex;align-items:center;gap:11px;margin-bottom:11px}
-.rev-av{width:42px;height:42px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--grad);color:#fff;font-weight:800;font-size:17px}
-.rev-name{font-weight:800;font-size:14.5px;letter-spacing:-.02em}
-.rev-stars{display:flex;gap:1px;color:#F5A623;margin-top:3px}
-.rev-text{font-size:13.5px;color:var(--ink-soft);line-height:1.55}
-.rev-ph{scroll-snap-align:start;flex:0 0 82%;max-width:320px;border:1px dashed var(--line-strong);border-radius:20px;display:grid;place-items:center;color:var(--ink-faint);font-size:12.5px;padding:26px 22px;text-align:center;line-height:1.5}
+/* ---------- reviews (stories) ---------- */
+.stories{display:flex;gap:12px;overflow-x:auto;margin:0 -20px;padding:4px 20px 12px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.stories::-webkit-scrollbar{display:none}
+.story-card{flex:0 0 132px;aspect-ratio:9/16;border-radius:20px;cursor:pointer;position:relative;padding:3px;background:var(--grad);
+  box-shadow:0 16px 36px -24px rgba(138,18,198,.55);transition:transform var(--dur) var(--ease-spring)}
+.story-card:hover{transform:translateY(-3px)}
+.story-card img{width:100%;height:100%;object-fit:cover;display:block;border-radius:17px}
+.story-card::after{content:"";position:absolute;inset:3px;border-radius:17px;background:linear-gradient(to top,rgba(20,15,26,.35),transparent 45%);pointer-events:none}
+.story-card .play{position:absolute;bottom:9px;left:9px;z-index:1;display:flex;align-items:center;gap:5px;color:#fff;font-size:11px;font-weight:800;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.stories-ph{flex:1;border:1px dashed var(--line-strong);border-radius:20px;display:grid;place-items:center;color:var(--ink-faint);font-size:12.5px;padding:26px 22px;text-align:center;line-height:1.5}
+
+/* story viewer */
+.sv{position:fixed;inset:0;z-index:90;background:#0c0910;display:none;place-items:center;overflow:hidden}
+.sv.on{display:grid;animation:fade var(--dur) var(--ease-soft)}
+.sv-img{max-width:100%;max-height:100vh;object-fit:contain;display:block;user-select:none}
+.sv-bars{position:absolute;top:0;left:0;right:0;display:flex;gap:3px;padding:calc(10px + env(safe-area-inset-top)) 10px 10px;z-index:3}
+.sv-bar{flex:1;height:2.5px;border-radius:2px;background:rgba(255,255,255,.28);overflow:hidden}
+.sv-bar>i{display:block;height:100%;width:0;background:#fff;border-radius:2px}
+.sv-bar.done>i{width:100%}
+.sv-bar.active>i{animation:svfill 6s linear forwards}
+@keyframes svfill{to{width:100%}}
+.sv-close{position:absolute;top:calc(12px + env(safe-area-inset-top));right:14px;z-index:4;width:38px;height:38px;border:none;border-radius:50%;cursor:pointer;background:rgba(255,255,255,.16);color:#fff;display:grid;place-items:center}
+.sv-nav{position:absolute;top:0;bottom:0;z-index:2;cursor:pointer}
+.sv-nav.prev{left:0;width:32%}
+.sv-nav.next{right:0;width:68%}
+.sv-brand{position:absolute;top:calc(24px + env(safe-area-inset-top));left:16px;z-index:3;display:flex;align-items:center;gap:8px;color:#fff;font-weight:800;font-size:13px;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.sv-brand img{width:26px;height:26px}
 
 /* ---------- telegram ---------- */
 .tg-card{background:var(--ink);color:#fff;border-radius:26px;padding:32px 26px;text-align:center;position:relative;overflow:hidden}
@@ -416,10 +432,10 @@ body{
     <div class="upd" id="upd"></div>
   </section>
 
-  <!-- REVIEWS -->
+  <!-- REVIEWS (stories) -->
   <section class="sec">
-    <div class="sec-h io"><h2>Отзывы</h2><div class="ln"></div><span class="cnt">Родители</span></div>
-    <div class="reviews io" id="reviews"></div>
+    <div class="sec-h io"><h2>Наши образы</h2><div class="ln"></div><span class="cnt">Примерочная</span></div>
+    <div class="stories io" id="reviews"></div>
   </section>
 
   <!-- TELEGRAM — временно скрыт (убери hidden, когда бот будет готов) -->
@@ -466,6 +482,16 @@ body{
     </div>
     <div id="finderResult" class="finder-res" hidden></div>
   </div>
+</div>
+
+<!-- STORY VIEWER -->
+<div class="sv" id="sv" role="dialog" aria-modal="true">
+  <div class="sv-bars" id="svBars"></div>
+  <div class="sv-brand"><img src="assets/mark.png" alt="">frantik.by</div>
+  <button class="sv-close" aria-label="Закрыть"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <div class="sv-nav prev" id="svPrev"></div>
+  <div class="sv-nav next" id="svNext"></div>
+  <img class="sv-img" id="svImg" alt="Отзыв — образ из примерочной frantik.by">
 </div>
 
 <!-- LIGHTBOX -->
@@ -646,19 +672,37 @@ function plural(n,f){n=Math.abs(n)%100;const n1=n%10;if(n>10&&n<20)return f[2];i
   if(days>0&&days<=160){d.textContent=days+" "+plural(days,["день","дня","дней"]);el.hidden=false}
 })();
 
-/* ---------- отзывы (замени плейсхолдеры на реальные) ---------- */
-const REVIEWS=[
-  {name:"Ольга",r:5,text:"Брали школьную форму сыну в «Титане» — качество отличное, ткань плотная и не мнётся. Помогли подобрать размер, ребёнок в восторге."},
-  {name:"Марина",r:5,text:"Огромный выбор для девочек! Взяли сарафан и две блузки. Цены адекватные, обслуживание — душевное. Спасибо!"},
-  {name:"Дмитрий",r:5,text:"Удобно, что три точки по городу. Заехали в «Тивали», всё нашли за один раз к 1 сентября. Рекомендую."},
-  {name:"Екатерина",r:5,text:"Заказывали форму двум детям. Сидит идеально, стирается хорошо, вид сохраняет. Вернёмся ещё."}
-];
-(function(){
-  const box=document.getElementById("reviews");
-  const star='<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .6-5.3 4.6 1.6 6.8L12 17.3 5.7 20.5l1.6-6.8L2 9.1l7-.6z"/></svg>';
-  if(!REVIEWS.length){box.innerHTML='<div class="rev-ph">Здесь скоро появятся отзывы наших покупателей</div>';return}
-  box.innerHTML=REVIEWS.map(rv=>`<div class="rev"><div class="rev-top"><div class="rev-av">${rv.name[0]}</div><div><div class="rev-name">${rv.name}</div><div class="rev-stars">${star.repeat(rv.r)}</div></div></div><div class="rev-text">${rv.text}</div></div>`).join("");
-})();
+/* ---------- отзывы: сторис ---------- */
+let RV=[], svIdx=0, svTimer=null;
+const svEl=document.getElementById("sv"), svImg=document.getElementById("svImg"), svBars=document.getElementById("svBars"), revBox=document.getElementById("reviews");
+fetch("reviews.json").then(r=>r.ok?r.json():Promise.reject()).then(d=>{
+  RV=d.items||[];
+  if(!RV.length){revBox.innerHTML='<div class="stories-ph">Здесь скоро появятся образы наших покупателей</div>';return}
+  revBox.innerHTML=RV.map((it,i)=>`<div class="story-card" data-i="${i}"><img loading="lazy" src="${it.src}" alt="Образ из примерочной ${i+1}"><span class="play"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>смотреть</span></div>`).join("");
+  svBars.innerHTML=RV.map(()=>'<div class="sv-bar"><i></i></div>').join("");
+}).catch(()=>{revBox.innerHTML='<div class="stories-ph">Отзывы скоро появятся здесь</div>'});
+
+function svShow(i){
+  if(i>=RV.length){svClose();return}
+  if(i<0)i=0;
+  svIdx=i; svImg.src=RV[i].src;
+  const bars=svBars.querySelectorAll(".sv-bar");
+  bars.forEach((b,k)=>b.className="sv-bar"+(k<i?" done":""));
+  const active=bars[i]; if(active){active.classList.add("active");const f=active.querySelector("i");f.style.animation="none";void f.offsetWidth;f.style.animation=""}
+  clearTimeout(svTimer); svTimer=setTimeout(()=>svShow(svIdx+1),6000);
+}
+function svOpen(i){svEl.classList.add("on");document.body.style.overflow="hidden";svShow(i)}
+function svClose(){svEl.classList.remove("on");document.body.style.overflow="";clearTimeout(svTimer)}
+revBox.addEventListener("click",e=>{const c=e.target.closest(".story-card");if(c)svOpen(+c.dataset.i)});
+document.getElementById("svPrev").onclick=()=>svShow(Math.max(0,svIdx-1));
+document.getElementById("svNext").onclick=()=>svShow(svIdx+1);
+svEl.querySelector(".sv-close").onclick=svClose;
+document.addEventListener("keydown",e=>{if(!svEl.classList.contains("on"))return;if(e.key==="Escape")svClose();if(e.key==="ArrowLeft")svShow(Math.max(0,svIdx-1));if(e.key==="ArrowRight")svShow(svIdx+1)});
+let sx=0,sy=0;
+svEl.addEventListener("touchstart",e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+svEl.addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
+  if(dy>70&&Math.abs(dy)>Math.abs(dx)){svClose();return}
+  if(Math.abs(dx)>50)svShow(dx<0?svIdx+1:Math.max(0,svIdx-1));},{passive:true});
 
 /* ---------- nearest-store finder ---------- */
 const COORDS={tivali:[53.907399,27.4846515],titan:[53.8607128,27.4789313],expobel:[53.9641148,27.6241136]};
