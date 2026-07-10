@@ -583,6 +583,17 @@ body{
 </div>
 
 <script>
+/* ---------- analytics (пишем события в Firebase RTDB через REST) ---------- */
+const FB_URL="https://REPLACE-ME-default-rtdb.firebaseio.com"; // ← вставь RTDB URL своего Firebase-проекта
+let VISITOR=localStorage.getItem("frantik_vid");
+if(!VISITOR){VISITOR=Date.now().toString(36)+Math.random().toString(36).slice(2,8);localStorage.setItem("frantik_vid",VISITOR)}
+function track(e,m){
+  if(!FB_URL||FB_URL.indexOf("REPLACE-ME")>-1)return;
+  try{fetch(FB_URL+"/analytics/events.json",{method:"POST",keepalive:true,headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({t:Date.now(),v:VISITOR,e:e,m:m||null})});}catch(_){}
+}
+track("visit",{ref:document.referrer||null,w:innerWidth});
+
 /* ---------- data ---------- */
 const STORES=[
   {id:"tivali",name:'ТЦ «Тивали»',addr:"ул. Притыцкого 29, этаж 3, место 316",hours:"10:00 – 20:00 · без выходных",openH:10,closeH:20,closedDay:null,
@@ -630,8 +641,8 @@ storesEl.innerHTML=STORES.map((s,i)=>{
       </div>
     </div>
     <div class="store-actions">
-      <a class="act map" href="${s.map}" target="_blank" rel="noopener">${IC.route} Как добраться</a>
-      <a class="act call" href="tel:${s.tel}">${IC.phone} ${s.telView}</a>
+      <a class="act map" data-store="${s.id}" href="${s.map}" target="_blank" rel="noopener">${IC.route} Как добраться</a>
+      <a class="act call" data-store="${s.id}" href="tel:${s.tel}">${IC.phone} ${s.telView}</a>
     </div>
   </article>`;
 }).join("");
@@ -666,6 +677,7 @@ const sendModal=document.getElementById("sendModal");
 function shareFavsToTelegram(){
   const liked=[...CAT.girls,...CAT.boys].filter(it=>favs.has(it.src));
   if(!liked.length){openFavPrompt();return}
+  track("fav_send",{n:liked.length});
   const base=location.origin+location.pathname.replace(/[^/]*$/,"");
   const links=liked.slice(0,20).map((it,i)=>`${i+1}. ${base}${it.src}`).join("\n");
   const text=`Здравствуйте, Алёна! Мне понравились эти образы из школьной коллекции frantik.by (${liked.length} шт.). Подскажите, пожалуйста, размеры и цены:\n\n${links}`;
@@ -681,7 +693,7 @@ document.getElementById("smCopy").addEventListener("click",()=>{
   if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>toast("Скопировано ✓")).catch(()=>toast("Выделите текст и скопируйте вручную"));
 });
 document.getElementById("smOpen").addEventListener("click",()=>setTimeout(closeSendModal,400));
-function openFavPrompt(){favPrompt.classList.add("on");document.body.style.overflow="hidden"}
+function openFavPrompt(){track("fav_prompt");favPrompt.classList.add("on");document.body.style.overflow="hidden"}
 function closeFavPrompt(){favPrompt.classList.remove("on");document.body.style.overflow=""}
 sendFab.addEventListener("click",shareFavsToTelegram);
 sendHint.addEventListener("click",openFavPrompt);
@@ -690,11 +702,12 @@ favPrompt.addEventListener("click",e=>{if(e.target===favPrompt)closeFavPrompt()}
 document.getElementById("fpGo").addEventListener("click",()=>{closeFavPrompt();const c=document.getElementById("catalog");if(c)c.scrollIntoView({behavior:"smooth"})});
 function toggleFav(src,btn){
   favs.has(src)?favs.delete(src):favs.add(src); saveFavs();
+  track(favs.has(src)?"fav_add":"fav_remove",{src});
   if(btn)btn.classList.toggle("on",favs.has(src));
   updateFavBar();
   if(favMode)renderGrid();
 }
-favBar.addEventListener("click",()=>{favMode=!favMode;updateFavBar();renderGrid()});
+favBar.addEventListener("click",()=>{favMode=!favMode;if(favMode)track("fav_show",{n:favs.size});updateFavBar();renderGrid()});
 const tileObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("seen");tileObs.unobserve(e.target)}}),{threshold:.06,rootMargin:"0px 0px -5% 0px"});
 function countUp(el,to){if(!to){el.textContent="";return}let t0=null;const d=900;
   requestAnimationFrame(function step(ts){t0=t0||ts;const p=Math.min(1,(ts-t0)/d);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(step)})}
@@ -733,13 +746,16 @@ function renderGrid(){
   }
   renderMore();
 }
-moreBtn.addEventListener("click",renderMore);
+moreBtn.addEventListener("click",()=>{track("catalog_more");renderMore()});
+document.querySelector(".cta-primary")?.addEventListener("click",()=>track("cta_catalog"));
+storesEl.addEventListener("click",e=>{const a=e.target.closest(".act");if(a)track(a.classList.contains("call")?"store_call":"store_map",{s:a.dataset.store})});
+document.getElementById("tgBtn")?.addEventListener("click",()=>track("tg_subscribe"));
 function setCat(cat){
   current=cat; favMode=false; updateFavBar();
   document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.cat===cat));
   renderGrid();
 }
-document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>setCat(t.dataset.cat)));
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{track("catalog_tab",{c:t.dataset.cat});setCat(t.dataset.cat)}));
 
 fetch("catalog.json").then(r=>r.ok?r.json():Promise.reject()).then(d=>{
   CAT={girls:d.girls||[],boys:d.boys||[],updated:d.updated||""};
@@ -751,7 +767,7 @@ fetch("catalog.json").then(r=>r.ok?r.json():Promise.reject()).then(d=>{
 
 /* ---------- lightbox ---------- */
 const lb=document.getElementById("lb"),lbImg=document.getElementById("lb-img"),lbCount=document.getElementById("lb-count");
-function openLb(i){lbIdx=i;showLb();lb.classList.add("on");document.body.style.overflow="hidden"}
+function openLb(i){track("photo_view",{src:(lbList[i]||{}).src});lbIdx=i;showLb();lb.classList.add("on");document.body.style.overflow="hidden"}
 function closeLb(){lb.classList.remove("on");document.body.style.overflow=""}
 function showLb(){const it=lbList[lbIdx];if(!it)return;lbImg.src=it.full||it.src;lbCount.textContent=`${lbIdx+1} / ${lbList.length}`}
 function nav(d){lbIdx=(lbIdx+d+lbList.length)%lbList.length;showLb()}
@@ -827,7 +843,7 @@ function svShow(i){
   const active=bars[i]; if(active){active.classList.add("active");const f=active.querySelector("i");f.style.animation="none";void f.offsetWidth;f.style.animation=""}
   clearTimeout(svTimer); svTimer=setTimeout(()=>svShow(svIdx+1),6000);
 }
-function svOpen(i){svEl.classList.add("on");document.body.style.overflow="hidden";svShow(i)}
+function svOpen(i){track("story_view",{i});svEl.classList.add("on");document.body.style.overflow="hidden";svShow(i)}
 function svClose(){svEl.classList.remove("on");document.body.style.overflow="";clearTimeout(svTimer)}
 document.addEventListener("click",e=>{const c=e.target.closest(".story-card");if(c)svOpen(+c.dataset.i)});
 document.getElementById("svPrev").onclick=()=>svShow(Math.max(0,svIdx-1));
@@ -843,7 +859,7 @@ svEl.addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-sx,dy=
 /* ---------- nearest-store finder ---------- */
 const COORDS={tivali:[53.907399,27.4846515],titan:[53.8607128,27.4789313],expobel:[53.9641148,27.6241136]};
 const finder=document.getElementById("finder"),fAsk=document.getElementById("finderAsk"),fRes=document.getElementById("finderResult"),fErr=document.getElementById("finderErr");
-function openFinder(){finder.classList.add("on");document.body.style.overflow="hidden";fAsk.hidden=false;fRes.hidden=true;fErr.textContent=""}
+function openFinder(){track("widget_finder");finder.classList.add("on");document.body.style.overflow="hidden";fAsk.hidden=false;fRes.hidden=true;fErr.textContent=""}
 function closeFinder(){finder.classList.remove("on");document.body.style.overflow=""}
 document.getElementById("openFinder").addEventListener("click",openFinder);
 finder.querySelector(".finder-close").addEventListener("click",closeFinder);
@@ -855,6 +871,7 @@ function nearest(lat,lon){let best=null;STORES.forEach(s=>{const c=COORDS[s.id];
 function showResult(lat,lon){
   const r=nearest(lat,lon);if(!r){fErr.textContent="Не удалось определить магазин";return}
   const s=r.s,dist=r.d<1?Math.round(r.d*1000)+" м":r.d.toFixed(1).replace(".",",")+" км";
+  track("finder_result",{s:s.id,km:+r.d.toFixed(1)});
   fRes.innerHTML=`
     <img class="finder-mark" src="assets/mark.png" alt="">
     <h3>Ура! Ждём тебя здесь</h3>
@@ -971,11 +988,12 @@ function addToCalendar(s){
   const url=URL.createObjectURL(blob),a=document.createElement("a");
   a.href=url;a.download="frantik-school.ics";document.body.appendChild(a);a.click();a.remove();
   setTimeout(()=>URL.revokeObjectURL(url),1500);
+  track("calendar_add",{s:s.name,rem,date:dt});
   done.style.color="#16A34A";
   done.textContent=rem.length?`Готово! Напомним ${rem.map(r=>r===0?"в день покупки":r+" дн. до").join(", ")}`:"Событие добавлено в календарь";
 }
 document.getElementById("finderGeo").addEventListener("click",function(){
-  fErr.textContent="";
+  track("finder_geo");fErr.textContent="";
   if(!navigator.geolocation){fErr.textContent="Геолокация недоступна — введите адрес ниже";return}
   const b=this,old=b.innerHTML;b.innerHTML="Определяем…";b.disabled=true;
   navigator.geolocation.getCurrentPosition(
@@ -985,6 +1003,7 @@ document.getElementById("finderGeo").addEventListener("click",function(){
 });
 async function geocode(){
   const q=document.getElementById("finderAddr").value.trim();if(!q)return;
+  track("finder_search");
   fErr.style.color="var(--ink-soft)";fErr.textContent="Ищем адрес…";
   try{
     const url="https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=by&q="+encodeURIComponent(q+", Минск");

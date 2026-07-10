@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>frantik.by · Аналитика</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0E0B12;--panel:#17131E;--panel2:#1F1926;--ink:#F4F1F7;--soft:#A79FB3;--faint:#6F6779;
+  --line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);
+  --g1:#E85C54;--g2:#C1367F;--g3:#8A12C6;--grad:linear-gradient(115deg,var(--g1),var(--g2),var(--g3));
+  --ok:#22C55E;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Manrope",system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5;padding-bottom:60px}
+.wrap{max-width:960px;margin:0 auto;padding:20px 16px}
+a{color:inherit}
+/* lock */
+.lock{min-height:100vh;display:grid;place-items:center;padding:20px}
+.lock-card{max-width:360px;text-align:center;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:32px 26px}
+.lock-card h1{font-size:20px;font-weight:800;letter-spacing:-.02em}
+.lock-card p{margin-top:8px;color:var(--soft);font-size:14px}
+.lock-card input{margin-top:16px;width:100%;padding:13px 15px;border-radius:12px;border:1px solid var(--line2);background:var(--panel2);color:var(--ink);font-family:inherit;font-size:15px;outline:none}
+.lock-card button{margin-top:12px;width:100%;padding:13px;border:none;border-radius:12px;cursor:pointer;background:var(--grad);color:#fff;font-weight:800;font-size:15px;font-family:inherit}
+/* header */
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.top h1{font-size:20px;font-weight:800;letter-spacing:-.03em;display:flex;align-items:center;gap:9px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--grad)}
+.top .sp{flex:1}
+.seg{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:4px;gap:2px}
+.seg button{border:none;background:none;color:var(--soft);cursor:pointer;font-family:inherit;font-weight:700;font-size:12.5px;padding:7px 11px;border-radius:9px}
+.seg button.on{background:var(--grad);color:#fff}
+.btn{border:1px solid var(--line2);background:var(--panel);color:var(--ink);cursor:pointer;font-family:inherit;font-weight:700;font-size:12.5px;padding:9px 13px;border-radius:11px;display:inline-flex;align-items:center;gap:7px}
+.btn:hover{border-color:var(--soft)}
+.btn.grad{background:var(--grad);border:none;color:#fff}
+/* kpi */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 16px}
+.kpi .v{font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.kpi .l{margin-top:6px;font-size:12.5px;color:var(--soft);font-weight:600}
+.kpi .v.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* panels */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:680px){.grid2{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px}
+.panel h2{font-size:14px;font-weight:800;letter-spacing:-.01em;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.panel h2 .c{margin-left:auto;font-size:12px;color:var(--faint);font-weight:700}
+.row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.row:last-child{margin-bottom:0}
+.row .n{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:120px;flex:0 0 auto}
+.bar{flex:1;height:8px;border-radius:5px;background:var(--panel2);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:5px;background:var(--grad)}
+.row .val{font-size:13px;font-weight:800;min-width:38px;text-align:right;color:var(--soft)}
+.empty{color:var(--faint);font-size:13px;padding:6px 0}
+/* chart */
+.chart{display:flex;align-items:stretch;gap:4px;height:120px;margin-top:6px}
+.chart .col{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.chart .col .bb{width:100%;border-radius:5px 5px 0 0;background:var(--grad);min-height:2px}
+.chart .col small{font-size:9.5px;color:var(--faint);white-space:nowrap}
+/* saved cards */
+.saved{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:8px}
+.saved figure{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:3/4;background:var(--panel2)}
+.saved img{width:100%;height:100%;object-fit:cover;display:block}
+.saved b{position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,.7);color:#fff;font-size:11px;font-weight:800;padding:1px 6px;border-radius:8px}
+/* feed */
+.feed{max-height:420px;overflow:auto}
+.visitor{border:1px solid var(--line);border-radius:13px;padding:12px 13px;margin-bottom:10px}
+.visitor .vh{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.visitor .vid{font-weight:800;font-size:12.5px}
+.visitor .vt{margin-left:auto;font-size:11.5px;color:var(--faint)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-size:11px;font-weight:700;padding:3px 8px;border-radius:7px;background:var(--panel2);color:var(--soft)}
+.chip.hot{background:rgba(232,92,84,.18);color:#F0938C}
+.muted{color:var(--faint);font-size:12px;text-align:center;margin-top:10px}
+.loading{text-align:center;color:var(--soft);padding:40px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ── настройки ── */
+const FB_URL="https://REPLACE-ME-default-rtdb.firebaseio.com"; // ← тот же RTDB URL, что и в index.html
+const SECRET="fr-9x2k7m";                                       // ← секрет для доступа (ссылка: admin.html?key=fr-9x2k7m)
+
+const app=document.getElementById("app");
+const qs=new URLSearchParams(location.search);
+let KEY=qs.get("key")||sessionStorage.getItem("frk_admin")||"";
+
+const LABELS={
+  visit:"Визиты",cta_catalog:"Клик «Школьная коллекция»",
+  store_map:"Магазин · как добраться",store_call:"Магазин · позвонить",
+  widget_finder:"Открыт «ближайший магазин»",finder_geo:"Геолокация",finder_search:"Поиск по адресу",finder_result:"Показан ближайший",
+  calendar_add:"Добавил в календарь",fav_add:"Сохранил фото ♥",fav_remove:"Убрал из избранного",
+  fav_show:"Открыл избранное",fav_prompt:"Попап «выбери сердечком»",fav_send:"Отправка запроса в Telegram",
+  catalog_tab:"Переключил вкладку каталога",catalog_more:"Показать ещё",photo_view:"Открыл фото каталога",
+  story_view:"Смотрел отзыв",tg_subscribe:"Подписка Telegram"
+};
+const STORE_NAME={tivali:"Тивали",titan:"Титан",expobel:"Экспобел"};
+const label=e=>LABELS[e]||e;
+
+function lockScreen(msg){
+  app.innerHTML=`<div class="lock"><div class="lock-card">
+    <h1>🔒 Аналитика frantik.by</h1>
+    <p>${msg||"Введите ключ доступа"}</p>
+    <input id="k" type="password" placeholder="ключ доступа" value="">
+    <button id="go">Войти</button>
+  </div></div>`;
+  document.getElementById("go").onclick=()=>{const v=document.getElementById("k").value.trim();sessionStorage.setItem("frk_admin",v);location.search="?key="+encodeURIComponent(v)};
+  document.getElementById("k").onkeydown=e=>{if(e.key==="Enter")document.getElementById("go").click()};
+}
+
+function fmt(n){return n>=1000?(n/1000).toFixed(n>=10000?0:1)+"k":""+n}
+function ago(t){const s=(Date.now()-t)/1000;if(s<60)return"только что";if(s<3600)return Math.floor(s/60)+" мин назад";if(s<86400)return Math.floor(s/3600)+" ч назад";return Math.floor(s/86400)+" дн назад"}
+
+let ALL=[];
+async function load(){
+  if(FB_URL.indexOf("REPLACE-ME")>-1){app.innerHTML='<div class="wrap"><div class="panel">⚠️ Впишите свой Firebase RTDB URL в <b>admin.html</b> и <b>index.html</b> (переменная FB_URL).</div></div>';return}
+  app.innerHTML='<div class="loading">Загружаю статистику…</div>';
+  let data;
+  try{ const r=await fetch(FB_URL+"/analytics/events.json"); data=await r.json(); }
+  catch(e){ app.innerHTML='<div class="wrap"><div class="panel">Ошибка загрузки. Проверьте FB_URL и правила базы (нужен доступ на чтение /analytics).</div></div>'; return; }
+  ALL=data?Object.values(data):[];
+  ALL.sort((a,b)=>a.t-b.t);
+  render(sessionStorage.getItem("frk_range")||"7");
+}
+
+function render(range){
+  sessionStorage.setItem("frk_range",range);
+  const now=Date.now();
+  const cut=range==="0"?new Date().setHours(0,0,0,0):range==="all"?0:now-(+range)*864e5;
+  const ev=ALL.filter(x=>x.t>=cut);
+
+  const byType={},byStore={},bySavedSrc={},byVisitor={},byDay={};
+  let visits=0;
+  const uniq=new Set();
+  ev.forEach(x=>{
+    byType[x.e]=(byType[x.e]||0)+1;
+    if(x.e==="visit")visits++;
+    if(x.v)uniq.add(x.v);
+    if(x.e==="store_map"||x.e==="store_call"){const k=(x.m&&x.m.s)||"?";byStore[k]=byStore[k]||{map:0,call:0};byStore[k][x.e==="store_call"?"call":"map"]++;}
+    if(x.e==="fav_add"&&x.m&&x.m.src)bySavedSrc[x.m.src]=(bySavedSrc[x.m.src]||0)+1;
+    (byVisitor[x.v]=byVisitor[x.v]||[]).push(x);
+    const d=new Date(x.t);const dk=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+    byDay[dk]=(byDay[dk]||0)+1;
+  });
+  const kpi=(e)=>byType[e]||0;
+
+  // события по типам (сорт)
+  const typeRows=Object.entries(byType).sort((a,b)=>b[1]-a[1]);
+  const maxType=Math.max(1,...typeRows.map(r=>r[1]));
+
+  // топ сохранённых
+  const savedTop=Object.entries(bySavedSrc).sort((a,b)=>b[1]-a[1]).slice(0,12);
+
+  // магазины
+  const storeRows=Object.entries(byStore);
+
+  // дни (график) — последние 14
+  const days=Object.keys(byDay).sort().slice(-14);
+  const maxDay=Math.max(1,...days.map(d=>byDay[d]));
+
+  // посетители (последняя активность), топ 40
+  const visitors=Object.entries(byVisitor).map(([v,list])=>({v,list,last:list[list.length-1].t}))
+    .sort((a,b)=>b.last-a.last).slice(0,40);
+
+  const bar=(rows,max)=>rows.length?rows.map(([k,val])=>`<div class="row"><div class="n" title="${label(k)}">${label(k)}</div><div class="bar"><i style="width:${Math.max(4,val/max*100)}%"></i></div><div class="val">${val}</div></div>`).join(""):'<div class="empty">Пока нет данных</div>';
+
+  app.innerHTML=`<div class="wrap">
+    <div class="top">
+      <h1><span class="dot"></span>frantik.by · Аналитика</h1>
+      <div class="sp"></div>
+      <div class="seg" id="seg">
+        ${[["0","Сегодня"],["7","7 дней"],["30","30 дней"],["all","Всё"]].map(([k,l])=>`<button data-r="${k}" class="${k===range?'on':''}">${l}</button>`).join("")}
+      </div>
+      <button class="btn" id="refresh">↻ Обновить</button>
+      <button class="btn grad" id="copy">Скопировать сводку</button>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="v grad">${fmt(visits)}</div><div class="l">Визиты</div></div>
+      <div class="kpi"><div class="v">${fmt(uniq.size)}</div><div class="l">Уникальных посетителей</div></div>
+      <div class="kpi"><div class="v">${fmt(ev.length)}</div><div class="l">Всего событий</div></div>
+      <div class="kpi"><div class="v">${fmt(kpi("fav_add"))}</div><div class="l">Сохранили фото ♥</div></div>
+      <div class="kpi"><div class="v">${fmt(kpi("calendar_add"))}</div><div class="l">Добавили в календарь</div></div>
+      <div class="kpi"><div class="v">${fmt(kpi("fav_send"))}</div><div class="l">Запросов в Telegram</div></div>
+    </div>
+
+    <div class="panel">
+      <h2>Активность по дням<span class="c">${days.length} дн</span></h2>
+      <div class="chart">${days.length?days.map(d=>`<div class="col"><div class="bb" style="height:${byDay[d]/maxDay*100}%"></div><small>${d.slice(5)}</small></div>`).join(""):'<div class="empty">Нет данных</div>'}</div>
+    </div>
+
+    <div class="grid2">
+      <div class="panel"><h2>События по типам<span class="c">${typeRows.length}</span></h2>${bar(typeRows,maxType)}</div>
+      <div class="panel"><h2>Клики по магазинам</h2>
+        ${storeRows.length?storeRows.map(([k,o])=>`<div class="row"><div class="n">${STORE_NAME[k]||k}</div><div class="bar"><i style="width:${Math.min(100,(o.map+o.call)/Math.max(1,...storeRows.map(r=>r[1].map+r[1].call))*100)}%"></i></div><div class="val">🗺 ${o.map} · ☎ ${o.call}</div></div>`).join(""):'<div class="empty">Пока нет кликов</div>'}
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Топ сохранённых карточек<span class="c">${savedTop.length}</span></h2>
+      ${savedTop.length?`<div class="saved">${savedTop.map(([src,c])=>`<figure><img loading="lazy" src="${src}" alt=""><b>${c}</b></figure>`).join("")}</div>`:'<div class="empty">Пока никто не сохранял фото</div>'}
+    </div>
+
+    <div class="panel">
+      <h2>Посетители · последняя активность<span class="c">${Object.keys(byVisitor).length}</span></h2>
+      <div class="feed">
+        ${visitors.map(vs=>{
+          const counts={};vs.list.forEach(x=>counts[x.e]=(counts[x.e]||0)+1);
+          const chips=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([e,c])=>{
+            const hot=["fav_send","calendar_add","fav_add","store_call","finder_result"].includes(e);
+            return `<span class="chip ${hot?'hot':''}">${label(e)}${c>1?" ×"+c:""}</span>`;
+          }).join("");
+          return `<div class="visitor"><div class="vh"><span class="vid">#${vs.v}</span><span class="vt">${ago(vs.last)} · ${vs.list.length} соб.</span></div><div class="chips">${chips}</div></div>`;
+        }).join("")}
+      </div>
+    </div>
+    <div class="muted">Данные анонимные (визитор = случайный id устройства). Обновлено ${new Date().toLocaleString("ru-RU")}</div>
+  </div>`;
+
+  document.querySelectorAll("#seg button").forEach(b=>b.onclick=()=>render(b.dataset.r));
+  document.getElementById("refresh").onclick=load;
+  document.getElementById("copy").onclick=()=>copySummary(range,{visits,uniq:uniq.size,total:ev.length,byType,byStore,savedTop,days,byDay});
+}
+
+function copySummary(range,d){
+  const rn={0:"сегодня",7:"7 дней",30:"30 дней",all:"всё время"}[range]||range;
+  let t=`СВОДКА frantik.by (${rn})\n`;
+  t+=`Визиты: ${d.visits} · Уник: ${d.uniq} · Событий: ${d.total}\n\n`;
+  t+=`СОБЫТИЯ:\n`+Object.entries(d.byType).sort((a,b)=>b[1]-a[1]).map(([e,c])=>`  ${label(e)}: ${c}`).join("\n");
+  t+=`\n\nМАГАЗИНЫ:\n`+(Object.entries(d.byStore).map(([k,o])=>`  ${STORE_NAME[k]||k}: карта ${o.map}, звонок ${o.call}`).join("\n")||"  —");
+  t+=`\n\nТОП СОХРАНЁННЫХ (${d.savedTop.length}):\n`+(d.savedTop.map(([s,c])=>`  ${c}× ${s}`).join("\n")||"  —");
+  t+=`\n\nПО ДНЯМ:\n`+d.days.map(x=>`  ${x}: ${d.byDay[x]}`).join("\n");
+  navigator.clipboard.writeText(t).then(()=>{const b=document.getElementById("copy");b.textContent="Скопировано ✓";setTimeout(()=>b.textContent="Скопировать сводку",1800)}).catch(()=>alert(t));
+}
+
+/* ── вход ── */
+if(KEY!==SECRET){ lockScreen(KEY?"Неверный ключ":"Введите ключ доступа"); }
+else{ sessionStorage.setItem("frk_admin",KEY); load(); }
+</script>
+</body>
+</html>
