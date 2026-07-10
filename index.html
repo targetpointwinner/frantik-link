@@ -396,6 +396,24 @@ body{
 .sm-open svg{filter:drop-shadow(0 1px 2px rgba(0,0,0,.25))}
 @keyframes smIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .sm-note{margin-top:12px;font-size:12px;color:var(--ink-faint);line-height:1.45;animation:smIn .5s var(--ease-spring) .2s both}
+/* гайд «как вставить» */
+.guide-anim{position:relative;height:104px;margin:6px 0 2px}
+.ga-field{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:100%;max-width:290px;height:46px;border-radius:23px;border:1px solid var(--line-strong);background:var(--card);display:flex;align-items:center;padding:0 46px 0 16px;overflow:hidden}
+.ga-field .snd{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:var(--grad);display:grid;place-items:center;color:#fff}
+.ga-ph{color:var(--ink-faint);font-size:13.5px;animation:gaPh 4s var(--ease-soft) infinite}
+.ga-txt{position:absolute;left:16px;right:50px;color:var(--ink);font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0;animation:gaTxt 4s var(--ease-soft) infinite}
+.ga-paste{position:absolute;top:6px;left:50%;transform:translateX(-50%);background:#1C1622;color:#fff;font-size:12px;font-weight:800;padding:6px 14px;border-radius:9px;opacity:0;z-index:3;white-space:nowrap;animation:gaPaste 4s var(--ease-soft) infinite}
+.ga-paste::after{content:"";position:absolute;bottom:-5px;left:50%;margin-left:-5px;border:5px solid transparent;border-top-color:#1C1622}
+.ga-finger{position:absolute;z-index:4;left:52%;top:88px;width:26px;height:26px;border-radius:50%;background:rgba(28,22,34,.14);border:2px solid var(--ink);opacity:0;animation:gaFinger 4s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes gaPh{0%,46%{opacity:1}56%,100%{opacity:0}}
+@keyframes gaTxt{0%,56%{opacity:0;transform:translateX(-6px)}72%,96%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes gaPaste{0%,24%{opacity:0;transform:translate(-50%,6px) scale(.85)}32%,52%{opacity:1;transform:translate(-50%,0) scale(1)}60%,100%{opacity:0;transform:translate(-50%,0) scale(.9)}}
+@keyframes gaFinger{0%{opacity:0;top:88px;transform:translateX(-50%) scale(1)}10%{opacity:.85}22%{top:44px;transform:translateX(-50%) scale(.78)}30%{top:44px;transform:translateX(-50%) scale(1)}48%{opacity:.85;top:44px}58%,100%{opacity:0;top:44px}}
+.guide-steps{list-style:none;text-align:left;margin:10px auto 0;max-width:300px;display:flex;flex-direction:column;gap:9px}
+.guide-steps li{font-size:13.5px;color:var(--ink-soft);line-height:1.4}
+.guide-steps li b{color:var(--ink);font-weight:800}
+#guideTitle{margin-top:2px}
+.sm-back{margin-top:14px;background:none;border:none;cursor:pointer;color:var(--ink-faint);font-family:"Manrope";font-weight:700;font-size:13px}
 .sm-copy{margin-top:12px;background:none;border:none;cursor:pointer;color:var(--ink-faint);font-family:"Manrope";font-weight:700;font-size:13px;text-decoration:underline}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(16px);z-index:120;
   background:var(--ink);color:#fff;padding:12px 18px;border-radius:13px;font-size:13.5px;font-weight:600;line-height:1.4;max-width:calc(100% - 40px);text-align:center;
@@ -556,20 +574,43 @@ body{
 <div class="fp" id="sendModal" role="dialog" aria-modal="true">
   <div class="fp-card">
     <button class="fp-close" aria-label="Закрыть"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
-    <img src="assets/mark.png" alt="">
-    <h3>Сообщение готово ✓</h3>
-    <p>Скопировали его в буфер. Откройте чат, <b>зажмите поле ввода → «Вставить»</b> и отправьте — подскажем размеры и цены.</p>
-    <div class="sm-msg" id="smMsg"></div>
-    <a class="sm-open tg" id="smOpen" href="https://t.me/alena19793" target="_blank" rel="noopener">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.3l-3.2 15.1c-.24 1.06-.87 1.32-1.76.82l-4.86-3.58-2.35 2.26c-.26.26-.48.48-.98.48l.35-4.94L18 6.03c.39-.35-.09-.54-.6-.19L6.9 12.7l-4.9-1.53c-1.06-.33-1.08-1.06.22-1.57L20.5 2.8c.89-.33 1.66.2 1.4 1.5z"/></svg>
-      Написать в Telegram
-    </a>
-    <a class="sm-open ig" id="smInsta" href="https://ig.me/m/frantik.by" target="_blank" rel="noopener">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c3.2 0 3.6 0 4.85.07 1.17.05 1.8.25 2.23.42.56.22.96.48 1.38.9.42.42.68.82.9 1.38.17.42.37 1.06.42 2.23.06 1.27.07 1.65.07 4.85s0 3.6-.07 4.85c-.05 1.17-.25 1.8-.42 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.17-1.06.37-2.23.42-1.27.06-1.65.07-4.85.07s-3.6 0-4.85-.07c-1.17-.05-1.8-.25-2.23-.42a3.7 3.7 0 01-1.38-.9 3.7 3.7 0 01-.9-1.38c-.17-.42-.37-1.06-.42-2.23-.06-1.25-.07-1.65-.07-4.85s0-3.6.07-4.85c.05-1.17.25-1.8.42-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.17 1.06-.37 2.23-.42C8.4 2.2 8.8 2.2 12 2.2zm0 3.05A6.75 6.75 0 1018.75 12 6.75 6.75 0 0012 5.25zm0 11.13A4.38 4.38 0 1116.38 12 4.38 4.38 0 0112 16.38zm6.96-11.4a1.58 1.58 0 11-1.58-1.57 1.58 1.58 0 011.58 1.57z"/></svg>
-      Написать в Instagram Direct
-    </a>
-    <div class="sm-note">Нет Telegram? Напишите нам в Instagram — сообщение уже скопировано, просто вставьте.</div>
-    <button class="sm-copy" id="smCopy">Скопировать ещё раз</button>
+    <!-- ЭКРАН 1 — выбор канала -->
+    <div id="smMain">
+      <img src="assets/mark.png" alt="">
+      <h3>Сообщение готово ✓</h3>
+      <p>Мы уже <b>скопировали</b> его для вас. Осталось выбрать, куда написать:</p>
+      <div class="sm-msg" id="smMsg"></div>
+      <button class="sm-open tg" id="smOpen" type="button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.3l-3.2 15.1c-.24 1.06-.87 1.32-1.76.82l-4.86-3.58-2.35 2.26c-.26.26-.48.48-.98.48l.35-4.94L18 6.03c.39-.35-.09-.54-.6-.19L6.9 12.7l-4.9-1.53c-1.06-.33-1.08-1.06.22-1.57L20.5 2.8c.89-.33 1.66.2 1.4 1.5z"/></svg>
+        Написать в Telegram
+      </button>
+      <button class="sm-open ig" id="smInsta" type="button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c3.2 0 3.6 0 4.85.07 1.17.05 1.8.25 2.23.42.56.22.96.48 1.38.9.42.42.68.82.9 1.38.17.42.37 1.06.42 2.23.06 1.27.07 1.65.07 4.85s0 3.6-.07 4.85c-.05 1.17-.25 1.8-.42 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.17-1.06.37-2.23.42-1.27.06-1.65.07-4.85.07s-3.6 0-4.85-.07c-1.17-.05-1.8-.25-2.23-.42a3.7 3.7 0 01-1.38-.9 3.7 3.7 0 01-.9-1.38c-.17-.42-.37-1.06-.42-2.23-.06-1.25-.07-1.65-.07-4.85s0-3.6.07-4.85c.05-1.17.25-1.8.42-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.17 1.06-.37 2.23-.42C8.4 2.2 8.8 2.2 12 2.2zm0 3.05A6.75 6.75 0 1018.75 12 6.75 6.75 0 0012 5.25zm0 11.13A4.38 4.38 0 1116.38 12 4.38 4.38 0 0112 16.38zm6.96-11.4a1.58 1.58 0 11-1.58-1.57 1.58 1.58 0 011.58 1.57z"/></svg>
+        Написать в Instagram Direct
+      </button>
+      <div class="sm-note">Нет Telegram? Напишите в Instagram — сообщение уже скопировано.</div>
+      <button class="sm-copy" id="smCopy">Скопировать ещё раз</button>
+    </div>
+    <!-- ЭКРАН 2 — инструкция как вставить -->
+    <div id="smGuide" hidden>
+      <div class="guide-anim" aria-hidden="true">
+        <span class="ga-finger"></span>
+        <div class="ga-field">
+          <span class="ga-ph">Сообщение…</span>
+          <span class="ga-txt">Здравствуйте! Понравились образы…</span>
+          <span class="ga-paste">Вставить</span>
+          <span class="snd"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 11l18-8-8 18-2-7-8-3z"/></svg></span>
+        </div>
+      </div>
+      <h3 id="guideTitle">Сейчас откроется Instagram</h3>
+      <ol class="guide-steps">
+        <li><b>1.</b> Нажмите на поле для сообщения</li>
+        <li><b>2.</b> Задержите на нём палец → выберите <b>«Вставить»</b></li>
+        <li><b>3.</b> Нажмите отправить — и всё, мы получим ваш запрос!</li>
+      </ol>
+      <a class="sm-open ig" id="guideOpen" href="#" target="_blank" rel="noopener">Открыть <span id="guideCh">Instagram</span> →</a>
+      <button class="sm-back" id="guideBack" type="button">← вернуться к выбору</button>
+    </div>
   </div>
 </div>
 
@@ -693,6 +734,7 @@ function shareFavsToTelegram(){
   const text=`Здравствуйте, Алёна! Мне понравились эти образы из школьной коллекции frantik.by (${liked.length} шт.). Подскажите, пожалуйста, размеры и цены:\n\n${links}`;
   document.getElementById("smMsg").textContent=text;
   if(navigator.clipboard) navigator.clipboard.writeText(text).catch(()=>{});
+  document.getElementById("smGuide").hidden=true; document.getElementById("smMain").hidden=false;
   sendModal.classList.add("on"); document.body.style.overflow="hidden";
 }
 function closeSendModal(){sendModal.classList.remove("on");document.body.style.overflow=""}
@@ -702,8 +744,21 @@ document.getElementById("smCopy").addEventListener("click",()=>{
   const t=document.getElementById("smMsg").textContent;
   if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>toast("Скопировано ✓")).catch(()=>toast("Выделите текст и скопируйте вручную"));
 });
-document.getElementById("smOpen").addEventListener("click",()=>{track("send_telegram");setTimeout(closeSendModal,500)});
-document.getElementById("smInsta").addEventListener("click",()=>{track("send_instagram");setTimeout(closeSendModal,500)});
+const CH={tg:{url:"https://t.me/alena19793",name:"Telegram",cls:"tg",ev:"send_telegram"},ig:{url:"https://ig.me/m/frantik.by",name:"Instagram",cls:"ig",ev:"send_instagram"}};
+let curCh="ig";
+const smMain=document.getElementById("smMain"), smGuide=document.getElementById("smGuide"), guideOpen=document.getElementById("guideOpen");
+function showGuide(ch){
+  curCh=ch; const c=CH[ch];
+  document.getElementById("guideTitle").textContent="Сейчас откроется "+c.name;
+  document.getElementById("guideCh").textContent=c.name;
+  guideOpen.href=c.url; guideOpen.className="sm-open "+c.cls;
+  smMain.hidden=true; smGuide.hidden=false;
+  track(ch==="tg"?"send_telegram_pick":"send_instagram_pick");
+}
+document.getElementById("smOpen").addEventListener("click",()=>showGuide("tg"));
+document.getElementById("smInsta").addEventListener("click",()=>showGuide("ig"));
+guideOpen.addEventListener("click",()=>{track(CH[curCh].ev);setTimeout(closeSendModal,600)});
+document.getElementById("guideBack").addEventListener("click",()=>{smGuide.hidden=true;smMain.hidden=false});
 function openFavPrompt(){track("fav_prompt");favPrompt.classList.add("on");document.body.style.overflow="hidden"}
 function closeFavPrompt(){favPrompt.classList.remove("on");document.body.style.overflow=""}
 sendFab.addEventListener("click",shareFavsToTelegram);
