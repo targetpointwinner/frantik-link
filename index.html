@@ -389,8 +389,13 @@ body{
 .fp-btn:active{transform:scale(.98)}
 .fp-close{position:absolute;top:14px;right:14px;width:34px;height:34px;border:none;border-radius:50%;cursor:pointer;background:var(--bg-warm);color:var(--ink-soft);display:grid;place-items:center}
 .sm-msg{margin-top:14px;text-align:left;background:var(--bg-warm);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:12px;color:var(--ink-soft);line-height:1.5;max-height:110px;overflow:auto;white-space:pre-wrap;word-break:break-word}
-.sm-open{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:16px;width:100%;padding:15px;border-radius:15px;text-decoration:none;background:linear-gradient(135deg,#2AABEE,#229ED9);color:#fff;font-family:"Manrope";font-weight:800;font-size:15px;box-shadow:0 14px 32px -14px rgba(42,171,238,.6);transition:transform var(--dur-fast) var(--ease-spring)}
-.sm-open:active{transform:scale(.98)}
+.sm-open{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:10px;width:100%;padding:14px;border-radius:15px;text-decoration:none;color:#fff;font-family:"Manrope";font-weight:800;font-size:15px;transition:transform var(--dur-fast) var(--ease-spring);animation:smIn .5s var(--ease-spring) both}
+.sm-open:active{transform:scale(.97)}
+.sm-open.tg{margin-top:16px;background:linear-gradient(135deg,#2AABEE,#229ED9);box-shadow:0 14px 32px -14px rgba(42,171,238,.6);animation-delay:.05s}
+.sm-open.ig{background:linear-gradient(45deg,#FEDA75,#FA7E1E,#D62976,#962FBF,#4F5BD5);box-shadow:0 14px 32px -14px rgba(214,41,118,.55);animation-delay:.13s}
+.sm-open svg{filter:drop-shadow(0 1px 2px rgba(0,0,0,.25))}
+@keyframes smIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.sm-note{margin-top:12px;font-size:12px;color:var(--ink-faint);line-height:1.45;animation:smIn .5s var(--ease-spring) .2s both}
 .sm-copy{margin-top:12px;background:none;border:none;cursor:pointer;color:var(--ink-faint);font-family:"Manrope";font-weight:700;font-size:13px;text-decoration:underline}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(16px);z-index:120;
   background:var(--ink);color:#fff;padding:12px 18px;border-radius:13px;font-size:13.5px;font-weight:600;line-height:1.4;max-width:calc(100% - 40px);text-align:center;
@@ -553,12 +558,17 @@ body{
     <button class="fp-close" aria-label="Закрыть"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
     <img src="assets/mark.png" alt="">
     <h3>Сообщение готово ✓</h3>
-    <p>Мы скопировали его в буфер. Откройте чат Алёны, <b>зажмите поле ввода → «Вставить»</b> и отправьте — она подскажет размеры и цены.</p>
+    <p>Скопировали его в буфер. Откройте чат, <b>зажмите поле ввода → «Вставить»</b> и отправьте — подскажем размеры и цены.</p>
     <div class="sm-msg" id="smMsg"></div>
-    <a class="sm-open" id="smOpen" href="https://t.me/alena19793" target="_blank" rel="noopener">
+    <a class="sm-open tg" id="smOpen" href="https://t.me/alena19793" target="_blank" rel="noopener">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.3l-3.2 15.1c-.24 1.06-.87 1.32-1.76.82l-4.86-3.58-2.35 2.26c-.26.26-.48.48-.98.48l.35-4.94L18 6.03c.39-.35-.09-.54-.6-.19L6.9 12.7l-4.9-1.53c-1.06-.33-1.08-1.06.22-1.57L20.5 2.8c.89-.33 1.66.2 1.4 1.5z"/></svg>
-      Открыть чат Алёны
+      Написать в Telegram
     </a>
+    <a class="sm-open ig" id="smInsta" href="https://ig.me/m/frantik.by" target="_blank" rel="noopener">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c3.2 0 3.6 0 4.85.07 1.17.05 1.8.25 2.23.42.56.22.96.48 1.38.9.42.42.68.82.9 1.38.17.42.37 1.06.42 2.23.06 1.27.07 1.65.07 4.85s0 3.6-.07 4.85c-.05 1.17-.25 1.8-.42 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.17-1.06.37-2.23.42-1.27.06-1.65.07-4.85.07s-3.6 0-4.85-.07c-1.17-.05-1.8-.25-2.23-.42a3.7 3.7 0 01-1.38-.9 3.7 3.7 0 01-.9-1.38c-.17-.42-.37-1.06-.42-2.23-.06-1.25-.07-1.65-.07-4.85s0-3.6.07-4.85c.05-1.17.25-1.8.42-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.17 1.06-.37 2.23-.42C8.4 2.2 8.8 2.2 12 2.2zm0 3.05A6.75 6.75 0 1018.75 12 6.75 6.75 0 0012 5.25zm0 11.13A4.38 4.38 0 1116.38 12 4.38 4.38 0 0112 16.38zm6.96-11.4a1.58 1.58 0 11-1.58-1.57 1.58 1.58 0 011.58 1.57z"/></svg>
+      Написать в Instagram Direct
+    </a>
+    <div class="sm-note">Нет Telegram? Напишите нам в Instagram — сообщение уже скопировано, просто вставьте.</div>
     <button class="sm-copy" id="smCopy">Скопировать ещё раз</button>
   </div>
 </div>
@@ -692,7 +702,8 @@ document.getElementById("smCopy").addEventListener("click",()=>{
   const t=document.getElementById("smMsg").textContent;
   if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>toast("Скопировано ✓")).catch(()=>toast("Выделите текст и скопируйте вручную"));
 });
-document.getElementById("smOpen").addEventListener("click",()=>setTimeout(closeSendModal,400));
+document.getElementById("smOpen").addEventListener("click",()=>{track("send_telegram");setTimeout(closeSendModal,500)});
+document.getElementById("smInsta").addEventListener("click",()=>{track("send_instagram");setTimeout(closeSendModal,500)});
 function openFavPrompt(){track("fav_prompt");favPrompt.classList.add("on");document.body.style.overflow="hidden"}
 function closeFavPrompt(){favPrompt.classList.remove("on");document.body.style.overflow=""}
 sendFab.addEventListener("click",shareFavsToTelegram);

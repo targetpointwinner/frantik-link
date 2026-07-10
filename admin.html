@@ -96,7 +96,8 @@ const LABELS={
   store_map:"Магазин · как добраться",store_call:"Магазин · позвонить",
   widget_finder:"Открыт «ближайший магазин»",finder_geo:"Геолокация",finder_search:"Поиск по адресу",finder_result:"Показан ближайший",
   calendar_add:"Добавил в календарь",fav_add:"Сохранил фото ♥",fav_remove:"Убрал из избранного",
-  fav_show:"Открыл избранное",fav_prompt:"Попап «выбери сердечком»",fav_send:"Отправка запроса в Telegram",
+  fav_show:"Открыл избранное",fav_prompt:"Попап «выбери сердечком»",fav_send:"Открыл отправку запроса",
+  send_telegram:"Отправка → Telegram",send_instagram:"Отправка → Instagram",
   catalog_tab:"Переключил вкладку каталога",catalog_more:"Показать ещё",photo_view:"Открыл фото каталога",
   story_view:"Смотрел отзыв",tg_subscribe:"Подписка Telegram"
 };
@@ -187,7 +188,7 @@ function render(range){
       <div class="kpi"><div class="v">${fmt(ev.length)}</div><div class="l">Всего событий</div></div>
       <div class="kpi"><div class="v">${fmt(kpi("fav_add"))}</div><div class="l">Сохранили фото ♥</div></div>
       <div class="kpi"><div class="v">${fmt(kpi("calendar_add"))}</div><div class="l">Добавили в календарь</div></div>
-      <div class="kpi"><div class="v">${fmt(kpi("fav_send"))}</div><div class="l">Запросов в Telegram</div></div>
+      <div class="kpi"><div class="v">${fmt(kpi("send_telegram")+kpi("send_instagram"))}</div><div class="l">Отправок запроса (TG+IG)</div></div>
     </div>
 
     <div class="panel">
@@ -213,7 +214,7 @@ function render(range){
         ${visitors.map(vs=>{
           const counts={};vs.list.forEach(x=>counts[x.e]=(counts[x.e]||0)+1);
           const chips=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([e,c])=>{
-            const hot=["fav_send","calendar_add","fav_add","store_call","finder_result"].includes(e);
+            const hot=["send_telegram","send_instagram","fav_send","calendar_add","fav_add","store_call","finder_result"].includes(e);
             return `<span class="chip ${hot?'hot':''}">${label(e)}${c>1?" ×"+c:""}</span>`;
           }).join("");
           return `<div class="visitor"><div class="vh"><span class="vid">#${vs.v}</span><span class="vt">${ago(vs.last)} · ${vs.list.length} соб.</span></div><div class="chips">${chips}</div></div>`;
