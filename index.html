@@ -584,7 +584,7 @@ body{
 
 <script>
 /* ---------- analytics (пишем события в Firebase RTDB через REST) ---------- */
-const FB_URL="https://REPLACE-ME-default-rtdb.firebaseio.com"; // ← вставь RTDB URL своего Firebase-проекта
+const FB_URL="https://frantik-b6b03-default-rtdb.europe-west1.firebasedatabase.app"; // ← вставь RTDB URL своего Firebase-проекта
 let VISITOR=localStorage.getItem("frantik_vid");
 if(!VISITOR){VISITOR=Date.now().toString(36)+Math.random().toString(36).slice(2,8);localStorage.setItem("frantik_vid",VISITOR)}
 function track(e,m){
