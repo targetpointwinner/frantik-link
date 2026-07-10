@@ -709,9 +709,23 @@ fetch("reviews.json").then(r=>r.ok?r.json():Promise.reject()).then(d=>{
   RV=d.items||[];
   if(!RV.length){revBoxes.forEach(b=>b.innerHTML='<div class="stories-ph">Здесь скоро появятся отзывы наших клиентов</div>');return}
   const cards=RV.map((it,i)=>`<div class="story-card" data-i="${i}"><img loading="lazy" src="${it.src}" alt="Отзыв клиента ${i+1}"><span class="play"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>смотреть</span></div>`).join("");
-  revBoxes.forEach(b=>b.innerHTML=cards);
+  revBoxes.forEach(b=>{b.innerHTML=cards+cards; startMarquee(b);}); // дубль для бесшовного цикла
   svBars.innerHTML=RV.map(()=>'<div class="sv-bar"><i></i></div>').join("");
 }).catch(()=>revBoxes.forEach(b=>b.innerHTML='<div class="stories-ph">Отзывы скоро появятся здесь</div>'));
+function startMarquee(el){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const SPEED=0.35; // px/кадр, справа налево (лента уплывает влево)
+  let paused=false;
+  const pause=()=>{paused=true};
+  const resume=()=>{clearTimeout(el._rt);el._rt=setTimeout(()=>{paused=false},1400)};
+  el.addEventListener("mouseenter",pause); el.addEventListener("mouseleave",()=>{paused=false});
+  el.addEventListener("touchstart",pause,{passive:true}); el.addEventListener("touchend",resume,{passive:true});
+  el.addEventListener("wheel",()=>{pause();resume()},{passive:true});
+  (function step(){
+    if(!paused){el.scrollLeft+=SPEED;const half=el.scrollWidth/2;if(half>0&&el.scrollLeft>=half)el.scrollLeft-=half}
+    requestAnimationFrame(step);
+  })();
+}
 
 function svShow(i){
   if(i>=RV.length){svClose();return}
