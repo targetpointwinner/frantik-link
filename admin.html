@@ -96,7 +96,7 @@ const LABELS={
   store_map:"Магазин · как добраться",store_call:"Магазин · позвонить",
   widget_finder:"Открыт «ближайший магазин»",finder_geo:"Геолокация",finder_search:"Поиск по адресу",finder_result:"Показан ближайший",
   calendar_add:"Добавил в календарь",fav_add:"Сохранил фото ♥",fav_remove:"Убрал из избранного",
-  fav_show:"Открыл избранное",fav_prompt:"Попап «выбери сердечком»",fav_send:"Открыл отправку запроса",
+  fav_show:"Открыл избранное",fav_prompt:"Попап «выбери сердечком»",fav_send:"Открыл отправку запроса",ask_general:"Просто спросить (без выбора)",
   send_telegram_pick:"Выбрал канал Telegram",send_instagram_pick:"Выбрал канал Instagram",
   send_telegram:"Отправка → Telegram",send_instagram:"Отправка → Instagram",
   catalog_tab:"Переключил вкладку каталога",catalog_more:"Показать ещё",photo_view:"Открыл фото каталога",
@@ -215,7 +215,7 @@ function render(range){
         ${visitors.map(vs=>{
           const counts={};vs.list.forEach(x=>counts[x.e]=(counts[x.e]||0)+1);
           const chips=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([e,c])=>{
-            const hot=["send_telegram","send_instagram","fav_send","calendar_add","fav_add","store_call","finder_result"].includes(e);
+            const hot=["send_telegram","send_instagram","ask_general","fav_send","calendar_add","fav_add","store_call","finder_result"].includes(e);
             return `<span class="chip ${hot?'hot':''}">${label(e)}${c>1?" ×"+c:""}</span>`;
           }).join("");
           return `<div class="visitor"><div class="vh"><span class="vid">#${vs.v}</span><span class="vt">${ago(vs.last)} · ${vs.list.length} соб.</span></div><div class="chips">${chips}</div></div>`;

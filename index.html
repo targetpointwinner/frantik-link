@@ -387,6 +387,8 @@ body{
 .fp-card p .hh{color:#E8365B;font-weight:800}
 .fp-btn{margin-top:20px;width:100%;padding:14px;border:none;border-radius:15px;cursor:pointer;background:var(--grad);color:#fff;font-family:"Manrope";font-weight:800;font-size:15px;transition:transform var(--dur-fast) var(--ease-spring)}
 .fp-btn:active{transform:scale(.98)}
+.fp-ask{margin-top:10px;width:100%;padding:13px;border:1px solid var(--line-strong);border-radius:15px;cursor:pointer;background:var(--card);color:var(--ink);font-family:"Manrope";font-weight:700;font-size:14px;transition:background var(--dur-fast),border-color var(--dur-fast)}
+.fp-ask:hover{background:var(--grad-soft);border-color:transparent}
 .fp-close{position:absolute;top:14px;right:14px;width:34px;height:34px;border:none;border-radius:50%;cursor:pointer;background:var(--bg-warm);color:var(--ink-soft);display:grid;place-items:center}
 .sm-msg{margin-top:14px;text-align:left;background:var(--bg-warm);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:12px;color:var(--ink-soft);line-height:1.5;max-height:110px;overflow:auto;white-space:pre-wrap;word-break:break-word}
 .sm-open{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:10px;width:100%;padding:14px;border-radius:15px;text-decoration:none;color:#fff;font-family:"Manrope";font-weight:800;font-size:15px;transition:transform var(--dur-fast) var(--ease-spring);animation:smIn .5s var(--ease-spring) both}
@@ -469,7 +471,7 @@ body{
 
   <!-- REVIEWS (top, для доверия) -->
   <section class="sec" style="margin-top:36px">
-    <div class="sec-h io"><h2>Нас выбирают</h2><div class="ln"></div><span class="cnt">Отзывы</span></div>
+    <div class="sec-h io"><h2>Нас выбирают</h2><div class="ln"></div><span class="cnt" id="revCntTop">Отзывы</span></div>
     <div class="stories io" id="reviewsTop"></div>
   </section>
 
@@ -503,7 +505,7 @@ body{
 
   <!-- REVIEWS (stories) -->
   <section class="sec">
-    <div class="sec-h io"><h2>Наши любимые клиенты</h2><div class="ln"></div><span class="cnt">Отзывы</span></div>
+    <div class="sec-h io"><h2>Наши любимые клиенты</h2><div class="ln"></div><span class="cnt" id="revCntBot">Отзывы</span></div>
     <div class="stories io" id="reviews"></div>
   </section>
 
@@ -565,8 +567,9 @@ body{
     <button class="fp-close" aria-label="Закрыть"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
     <img src="assets/mark.png" alt="">
     <h3>Сначала выберите образы</h3>
-    <p>Вы ещё не отметили <span class="hh">♥</span> образы, которые понравились. Нажмите на сердечко у фото — а потом одной кнопкой пришлёте их нам в Telegram, и мы подскажем размеры и цены.</p>
+    <p>Вы ещё не отметили <span class="hh">♥</span> образы, которые понравились. Нажмите на сердечко у фото — а потом одной кнопкой пришлёте их нам в Telegram или Instagram — и мы подскажем размеры и цены.</p>
     <button class="fp-btn" id="fpGo">Выбрать образы</button>
+    <button class="fp-ask" id="fpAsk">Просто спросить размеры и цены</button>
   </div>
 </div>
 
@@ -725,17 +728,24 @@ function toast(msg){
   t.textContent=msg;t.classList.add("on");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("on"),4000);
 }
 const sendModal=document.getElementById("sendModal");
+function openSend(text){
+  document.getElementById("smMsg").textContent=text;
+  if(navigator.clipboard) navigator.clipboard.writeText(text).catch(()=>{});
+  document.getElementById("smGuide").hidden=true; document.getElementById("smMain").hidden=false;
+  sendModal.classList.add("on"); document.body.style.overflow="hidden";
+}
 function shareFavsToTelegram(){
   const liked=[...CAT.girls,...CAT.boys].filter(it=>favs.has(it.src));
   if(!liked.length){openFavPrompt();return}
   track("fav_send",{n:liked.length});
   const base=location.origin+location.pathname.replace(/[^/]*$/,"");
   const links=liked.slice(0,20).map((it,i)=>`${i+1}. ${base}${it.src}`).join("\n");
-  const text=`Здравствуйте, Алёна! Мне понравились эти образы из школьной коллекции frantik.by (${liked.length} шт.). Подскажите, пожалуйста, размеры и цены:\n\n${links}`;
-  document.getElementById("smMsg").textContent=text;
-  if(navigator.clipboard) navigator.clipboard.writeText(text).catch(()=>{});
-  document.getElementById("smGuide").hidden=true; document.getElementById("smMain").hidden=false;
-  sendModal.classList.add("on"); document.body.style.overflow="hidden";
+  openSend(`Здравствуйте, Алёна! Мне понравились эти образы из школьной коллекции frantik.by (${liked.length} шт.). Подскажите, пожалуйста, размеры и цены:\n\n${links}`);
+}
+function askGeneral(){
+  track("ask_general");
+  closeFavPrompt();
+  openSend("Здравствуйте! Подскажите, пожалуйста, по школьной коллекции frantik.by 2026/2027 — размеры, цены и наличие. Спасибо!");
 }
 function closeSendModal(){sendModal.classList.remove("on");document.body.style.overflow=""}
 sendModal.querySelector(".fp-close").addEventListener("click",closeSendModal);
@@ -766,10 +776,16 @@ sendHint.addEventListener("click",openFavPrompt);
 favPrompt.querySelector(".fp-close").addEventListener("click",closeFavPrompt);
 favPrompt.addEventListener("click",e=>{if(e.target===favPrompt)closeFavPrompt()});
 document.getElementById("fpGo").addEventListener("click",()=>{closeFavPrompt();const c=document.getElementById("catalog");if(c)c.scrollIntoView({behavior:"smooth"})});
+document.getElementById("fpAsk").addEventListener("click",askGeneral);
 function toggleFav(src,btn){
-  favs.has(src)?favs.delete(src):favs.add(src); saveFavs();
-  track(favs.has(src)?"fav_add":"fav_remove",{src});
-  if(btn)btn.classList.toggle("on",favs.has(src));
+  const adding=!favs.has(src);
+  adding?favs.add(src):favs.delete(src); saveFavs();
+  track(adding?"fav_add":"fav_remove",{src});
+  if(btn)btn.classList.toggle("on",adding);
+  if(adding && !localStorage.getItem("frantik_hint1")){
+    localStorage.setItem("frantik_hint1","1");
+    toast("Сохранили ❤ Отметьте ещё, что нравится — потом одной кнопкой пришлёте нам и узнаете цены и наличие");
+  }
   updateFavBar();
   if(favMode)renderGrid();
 }
@@ -878,6 +894,7 @@ fetch("reviews.json").then(r=>r.ok?r.json():Promise.reject()).then(d=>{
   if(!RV.length){revBoxes.forEach(b=>b.innerHTML='<div class="stories-ph">Здесь скоро появятся отзывы наших клиентов</div>');return}
   const cards=RV.map((it,i)=>`<div class="story-card" data-i="${i}"><img loading="lazy" src="${it.src}" alt="Отзыв клиента ${i+1}"><span class="play"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>смотреть</span></div>`).join("");
   revBoxes.forEach(b=>{b.innerHTML=cards+cards; startMarquee(b);}); // дубль для бесшовного цикла
+  ["revCntTop","revCntBot"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=RV.length+" · смотреть"});
   svBars.innerHTML=RV.map(()=>'<div class="sv-bar"><i></i></div>').join("");
 }).catch(()=>revBoxes.forEach(b=>b.innerHTML='<div class="stories-ph">Отзывы скоро появятся здесь</div>'));
 function startMarquee(el){
